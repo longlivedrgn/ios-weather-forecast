@@ -30,4 +30,11 @@ extension WeatherAPI {
         let lastURL = "?\(coordinate.description)&units=metric&appid=\(key)"
         return URL(string: baseURL + self.urlComponent + lastURL)!
     }
+    
+}
+
+extension Coordinate: CustomStringConvertible {
+    var description: String {
+        return "lat=\(latitude)&lon=\(longitude)"
+    }
 }

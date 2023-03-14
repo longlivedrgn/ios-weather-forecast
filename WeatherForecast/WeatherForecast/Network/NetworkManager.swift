@@ -16,31 +16,39 @@ class NetworkManager {
     
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) {
         
-        let url1 = WeatherAPI.currentWeather.makeOpenWeatherURL(coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
-        let url2 = URL.makeOpenWeatherURL(of: .currentWeather, coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
+        let url = WeatherAPI.currentWeather.makeOpenWeatherURL(coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
         
-        
-        print(url)
         let task = session.dataTask(with: url) { data, response, error in
-            if error != nil {
-                print("error1")
+            guard error == nil else {
+                print(NetworkError.failedRequest.resultOfNetworkError())
                 return
             }
-            guard let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(httpResponse.statusCode) else {
-                print("error2")
-                return
-            }
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let weatherInSeoul = try decoder.decode(CurrentWeather.self, from: data)
-                    print(weatherInSeoul.coordinate.description)
-                } catch {
-                    print(error)
-                }
+            
+            switch response?.checkResponse() {
+            case .failure(let error):
+                print(error)
+            case .success():
+                guard let result = self.decode(from: data, to: CurrentWeather.self) else { return }
+                print("결과야 \(result)")
+            case .none:
+                break
             }
         }
         task.resume()
+    }
+    
+    func decode<T: Decodable>(from data: Data?, to type: T.Type) -> T? {
+        // 1. 데이터가 비었을 때
+        guard let data = data else { return nil }
+        
+        let decoder = JSONDecoder()
+        do {
+            let data = try decoder.decode(type, from: data)
+            return data
+        } catch {
+            // 2. decoding에서 에러 발생했을 때
+            print("failed decoding: \(error)")
+            return nil
+        }
     }
 }
