@@ -15,7 +15,11 @@ class NetworkManager {
     }
     
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) {
-        let url = URL.makeOpenWeatherURL(of: .currentWeather, coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
+        
+        let url1 = WeatherAPI.currentWeather.makeOpenWeatherURL(coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
+        let url2 = URL.makeOpenWeatherURL(of: .currentWeather, coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
+        
+        
         print(url)
         let task = session.dataTask(with: url) { data, response, error in
             if error != nil {
