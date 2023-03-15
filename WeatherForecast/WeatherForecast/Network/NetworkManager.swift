@@ -15,10 +15,10 @@ class NetworkManager {
     }
     
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) {
-        
         let url = WeatherAPI.currentWeather.makeOpenWeatherURL(coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
         
         let task = session.dataTask(with: url) { data, response, error in
+            
             guard error == nil else {
                 print(NetworkError.failedRequest.resultOfNetworkError())
                 return

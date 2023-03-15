@@ -20,17 +20,19 @@ enum WeatherAPI {
             return "forecast"
         }
     }
-   
+    
+    static let baseURL = "https://api.openweathermap.org/data/2.5/\(self.urlComponent)"
 }
 
+// PR 질문
 extension WeatherAPI {
-    func makeOpenWeatherURL(coordinate: Coordinate, key: String) -> URL {
-        
-        let baseURL = "https://api.openweathermap.org/data/2.5/"
-        let lastURL = "?\(coordinate.description)&units=metric&appid=\(key)"
-        return URL(string: baseURL + self.urlComponent + lastURL)!
-    }
     
+    func makeWeatherURL(coordinate: Coordinate) -> URL {
+        let lastURL = "?\(coordinate.description)&units=metric&appid="
+        let apiKey = APIKeyManager.openWeather.apiKey
+        
+        return URL(string: WeatherAPI.URLComponent.baseURL + lastURL + apiKey)!
+    }
 }
 
 extension Coordinate: CustomStringConvertible {
