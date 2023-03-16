@@ -7,8 +7,8 @@
 
 import UIKit
 
-class NetworkManager {
-    let session: URLSession
+final class NetworkManager {
+    private let session: URLSession
     
     init(session: URLSession = .shared) {
         self.session = session
@@ -18,37 +18,37 @@ class NetworkManager {
         let url = weatherAPI.makeWeatherURL(coordinate: coordinate)
         let urlRequest = URLRequest(url: url)
         
-        let task = task(session: session, urlRequest: urlRequest) { error, response, data in
-            try self.handleRequest(error)
-            self.handleResponse(response: response)
-            self.convertData(from: data, to: weatherAPI.decodingType)
+        let task = task(session: session, urlRequest: urlRequest) { result in
+            switch result {
+            case .success(let data):
+                self.convertData(from: data, to: weatherAPI.decodingType)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
         task.resume()
     }
     
-    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (Error?, URLResponse?, Data?) throws -> Void) -> URLSessionDataTask {
-        let task = session.dataTask(with: urlRequest) { data, response, error in throws
+    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (Result<Data, NetworkError>) -> Void) -> URLSessionTask {
+        let task = session.dataTask(with: urlRequest) { data, response, error in
+            guard error == nil else {
+                completionHandler(.failure(.failedRequest))
+                return
+            }
             
-            try completionHandler(error, response, data)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                return completionHandler(.failure(.outOfReponseCode))
+            }
+            
+            guard let data = data else {
+                completionHandler(.failure(.dataIsEmpty))
+                return
+            }
+            
+            completionHandler(.success(data))
         }
         return task
-    }
-    
-    func handleRequest(_ error: Error?) throws {
-        guard error == nil else {
-            throw NetworkError.failedRequest
-        }
-    }
-    
-    func handleResponse(response: URLResponse?) {
-        switch response?.checkResponse() {
-        case .success(let successMessage):
-            print(successMessage)
-        case .failure(let errorPrint):
-            print(errorPrint.errorDescription)
-        case .none:
-            break
-        }
     }
     
     func convertData<T: Decodable>(from data: Data?, to type: T.Type) {
