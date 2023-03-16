@@ -15,25 +15,32 @@ class NetworkManager {
     }
     
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) {
-        let url = WeatherAPI.currentWeather.makeWeatherURL(coordinate: coordinate)
+        let url = weatherAPI.makeWeatherURL(coordinate: coordinate)
         let request = URLRequest(url: url)
         
         let task2 = makeTask(session: session, request: request) { error, response, data in
             self.handlingError(error: error)
-            self.handlingResponse(response: response, data: data)
+            if self.handlingResponse(response: response) {
+                self.convertData(from: data, to: weatherAPI.decodingType)
+            }
         }
         task2.resume()
     }
     
-    func handlingResponse(response: URLResponse?, data: Data?) {
+    func convertData<T: Decodable>(from data: Data?, to type: T.Type) {
+        guard let result = decode(from: data, to: type) else { return }
+        print("결과야 \(result)")
+    }
+    
+    func handlingResponse(response: URLResponse?) -> Bool {
         switch response?.checkResponse() {
         case .failure(let error):
             print(error)
+            return false
         case .success():
-            guard let result = self.decode(from: data, to: CurrentWeather.self) else { return }
-            print("결과야 \(result)")
+            return true
         case .none:
-            break
+            return false
         }
     }
     
