@@ -7,6 +7,16 @@
 
 import UIKit
 
-struct NetworkModel {
+final class NetworkModel {
     
+    func decode<T: Decodable>(from data: Data, to type: T.Type) -> T? {
+        let decoder = JSONDecoder()
+        
+        do {
+            let data = try decoder.decode(type, from: data)
+            return data
+        } catch {
+            return nil
+        }
+    }
 }

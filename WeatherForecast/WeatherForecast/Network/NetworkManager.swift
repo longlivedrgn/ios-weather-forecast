@@ -7,8 +7,11 @@
 
 import UIKit
 
+typealias NetworkResult = Result<Data, NetworkError>
+
 final class NetworkManager {
     private let session: URLSession
+    private let networkModel = NetworkModel()
     
     init(session: URLSession = .shared) {
         self.session = session
@@ -19,9 +22,11 @@ final class NetworkManager {
         let urlRequest = URLRequest(url: url)
         
         let task = task(session: session, urlRequest: urlRequest) { result in
+            
             switch result {
             case .success(let data):
-                self.convertData(from: data, to: weatherAPI.decodingType)
+                let result = self.networkModel.decode(from: data, to: weatherAPI.decodingType)
+                print("결과 나옴: \(result)")
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -29,15 +34,14 @@ final class NetworkManager {
         task.resume()
     }
     
-    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (Result<Data, NetworkError>) -> Void) -> URLSessionTask {
+    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (NetworkResult) -> Void) -> URLSessionTask {
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard error == nil else {
                 completionHandler(.failure(.failedRequest))
                 return
             }
             
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
+            guard response?.checkResponse == true else {
                 return completionHandler(.failure(.outOfReponseCode))
             }
             
@@ -49,24 +53,6 @@ final class NetworkManager {
             completionHandler(.success(data))
         }
         return task
-    }
-    
-    func convertData<T: Decodable>(from data: Data?, to type: T.Type) {
-        guard let result = decode(from: data, to: type) else { return }
-        print("결과야 \(result)")
-    }
-    
-    func decode<T: Decodable>(from data: Data?, to type: T.Type) -> T? {
-        guard let data = data else { return nil }
-        
-        let decoder = JSONDecoder()
-        print("여기까진 ok")
-        do {
-            let data = try decoder.decode(type, from: data)
-            return data
-        } catch {
-            return nil
-        }
     }
     
 }

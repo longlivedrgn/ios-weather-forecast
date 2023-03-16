@@ -7,8 +7,6 @@
 
 import UIKit
 
-typealias NetworkResult = Result<String, NetworkError>
-
 enum NetworkError: Error {
     case outOfReponseCode
     case failedRequest
