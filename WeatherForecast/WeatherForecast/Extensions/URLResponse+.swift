@@ -16,7 +16,7 @@ extension URLResponse {
     func checkResponse() -> NetworkResult {
         guard let httpResponse = self as? HTTPURLResponse,
               successRange.contains(httpResponse.statusCode) else {
-            return NetworkResult.failure(NetworkError.outOfReponseCode)
+            return .failure(NetworkError.outOfReponseCode)
         }
         return .success("Reponse 성공했습니다.")
     }

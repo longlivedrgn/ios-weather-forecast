@@ -19,33 +19,24 @@ class NetworkManager {
         let urlRequest = URLRequest(url: url)
         
         let task = task(session: session, urlRequest: urlRequest) { error, response, data in
-            self.handleError(result: self.checkError(error))
+            try self.handleRequest(error)
             self.handleResponse(response: response)
             self.convertData(from: data, to: weatherAPI.decodingType)
         }
         task.resume()
     }
     
-    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (Error?, URLResponse?, Data?) -> Void) -> URLSessionDataTask {
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-            completionHandler(error, response, data)
+    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (Error?, URLResponse?, Data?) throws -> Void) -> URLSessionDataTask {
+        let task = session.dataTask(with: urlRequest) { data, response, error in throws
+            
+            try completionHandler(error, response, data)
         }
         return task
     }
     
-    func checkError(_ error: Error?) -> NetworkResult {
+    func handleRequest(_ error: Error?) throws {
         guard error == nil else {
-            return NetworkError.failedRequest.resultOfNetworkError()
-        }
-        return .success("Error가 없습니다.")
-    }
-    
-    func handleError(result: NetworkResult) {
-        switch result {
-        case .success(let message):
-            print(message)
-        case .failure(let error):
-            print(error.message)
+            throw NetworkError.failedRequest
         }
     }
     
@@ -53,8 +44,8 @@ class NetworkManager {
         switch response?.checkResponse() {
         case .success(let successMessage):
             print(successMessage)
-        case .failure(let error):
-            print(error.message)
+        case .failure(let errorPrint):
+            print(errorPrint.errorDescription)
         case .none:
             break
         }

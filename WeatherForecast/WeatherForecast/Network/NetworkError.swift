@@ -12,8 +12,10 @@ typealias NetworkResult = Result<String, NetworkError>
 enum NetworkError: Error {
     case outOfReponseCode
     case failedRequest
-    
-    var message: String {
+}
+
+extension NetworkError: LocalizedError {
+    private var errorDescription: String {
         switch self {
         case .outOfReponseCode:
             return "응답코드가 정상코드 범위에 없습니다."
@@ -23,8 +25,8 @@ enum NetworkError: Error {
     }
 }
 
-extension NetworkError {
-    func resultOfNetworkError() -> NetworkResult {
-        return .failure(self)
-    }
-}
+//extension NetworkError {
+//    func resultOfNetworkError() -> NetworkResult {
+//        return .failure(self)
+//    }
+//}

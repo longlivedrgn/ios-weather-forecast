@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F2D797429C04DC500C30BE2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2D797329C04DC500C30BE2 /* NetworkManager.swift */; };
-		4FC8C12529C2A3D6005005A9 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC8C12429C2A3D6005005A9 /* APIKeys.swift */; };
+		4FC752F229C34CC2004730B4 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC752F129C34CC2004730B4 /* APIKeys.swift */; };
 		870E0EFB29C3095D00DF5695 /* URLResponse+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870E0EFA29C3095D00DF5695 /* URLResponse+.swift */; };
 		8797480B29C04D1100C5F3D5 /* CurrentWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797480A29C04D1100C5F3D5 /* CurrentWeather.swift */; };
 		8797480D29C04E4600C5F3D5 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8797480C29C04E4600C5F3D5 /* APIKeyManager.swift */; };
@@ -44,7 +44,7 @@
 
 /* Begin PBXFileReference section */
 		4F2D797329C04DC500C30BE2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		4FC8C12429C2A3D6005005A9 /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		4FC752F129C34CC2004730B4 /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		870E0EFA29C3095D00DF5695 /* URLResponse+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLResponse+.swift"; sourceTree = "<group>"; };
 		8797480A29C04D1100C5F3D5 /* CurrentWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeather.swift; sourceTree = "<group>"; };
 		8797480C29C04E4600C5F3D5 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				8797480C29C04E4600C5F3D5 /* APIKeyManager.swift */,
-				4FC8C12429C2A3D6005005A9 /* APIKeys.swift */,
+				4FC752F129C34CC2004730B4 /* APIKeys.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -314,10 +314,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FC752F229C34CC2004730B4 /* APIKeys.swift in Sources */,
 				4F2D797429C04DC500C30BE2 /* NetworkManager.swift in Sources */,
 				87B6EE5D29C2A70A00BB19BC /* FiveDaysForecast.swift in Sources */,
 				C79C8CF825ADDDF200EEE3F1 /* ViewController.swift in Sources */,
-				4FC8C12529C2A3D6005005A9 /* APIKeys.swift in Sources */,
 				8797480D29C04E4600C5F3D5 /* APIKeyManager.swift in Sources */,
 				8797480B29C04D1100C5F3D5 /* CurrentWeather.swift in Sources */,
 				8797480F29C0668D00C5F3D5 /* WeatherAPI.swift in Sources */,
