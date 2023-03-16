@@ -15,26 +15,41 @@ class NetworkManager {
     }
     
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) {
-        let url = WeatherAPI.currentWeather.makeOpenWeatherURL(coordinate: coordinate, key: APIKeyManager.openWeather.apiKey)
+        let url = WeatherAPI.currentWeather.makeWeatherURL(coordinate: coordinate)
+        let request = URLRequest(url: url)
         
-        let task = session.dataTask(with: url) { data, response, error in
-            
-            guard error == nil else {
-                print(NetworkError.failedRequest.resultOfNetworkError())
-                return
-            }
-            
-            switch response?.checkResponse() {
-            case .failure(let error):
-                print(error)
-            case .success():
-                guard let result = self.decode(from: data, to: CurrentWeather.self) else { return }
-                print("결과야 \(result)")
-            case .none:
-                break
-            }
+        let task2 = makeTask(session: session, request: request) { error, response, data in
+            self.handlingError(error: error)
+            self.handlingResponse(response: response, data: data)
         }
-        task.resume()
+        task2.resume()
+    }
+    
+    func handlingResponse(response: URLResponse?, data: Data?) {
+        switch response?.checkResponse() {
+        case .failure(let error):
+            print(error)
+        case .success():
+            guard let result = self.decode(from: data, to: CurrentWeather.self) else { return }
+            print("결과야 \(result)")
+        case .none:
+            break
+        }
+    }
+    
+    func handlingError(error: Error?) {
+        guard error == nil else {
+            print(NetworkError.failedRequest.resultOfNetworkError())
+            return
+        }
+    }
+    
+    func makeTask(session: URLSession, request: URLRequest, closure: @escaping (Error?, URLResponse?, Data?) -> Void) -> URLSessionTask {
+        let task = session.dataTask(with: request) { data, response, error in
+            closure(error, response, data)
+        }
+        
+        return task
     }
     
     func decode<T: Decodable>(from data: Data?, to type: T.Type) -> T? {

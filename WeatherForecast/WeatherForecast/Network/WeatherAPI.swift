@@ -21,7 +21,7 @@ enum WeatherAPI {
         }
     }
     
-    static let baseURL = "https://api.openweathermap.org/data/2.5/\(self.urlComponent)"
+    static let baseURL = "https://api.openweathermap.org/data/2.5/weather"
 }
 
 // PR 질문
@@ -31,7 +31,7 @@ extension WeatherAPI {
         let lastURL = "?\(coordinate.description)&units=metric&appid="
         let apiKey = APIKeyManager.openWeather.apiKey
         
-        return URL(string: WeatherAPI.URLComponent.baseURL + lastURL + apiKey)!
+        return URL(string: WeatherAPI.baseURL + lastURL + apiKey)!
     }
 }
 
