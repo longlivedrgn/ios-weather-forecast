@@ -7,8 +7,6 @@
 
 import UIKit
 
-typealias NetworkResult = Result<Data, NetworkError>
-
 final class NetworkManager {
     private let session: URLSession
     private let networkModel = NetworkModel()
@@ -21,7 +19,7 @@ final class NetworkManager {
         let url = weatherAPI.makeWeatherURL(coordinate: coordinate)
         let urlRequest = URLRequest(url: url)
         
-        let task = task(session: session, urlRequest: urlRequest) { result in
+        let task = networkModel.task(session: session, urlRequest: urlRequest) { result in
             
             switch result {
             case .success(let data):
@@ -32,27 +30,6 @@ final class NetworkManager {
             }
         }
         task.resume()
-    }
-    
-    func task(session: URLSession, urlRequest: URLRequest, completionHandler: @escaping (NetworkResult) -> Void) -> URLSessionTask {
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-            guard error == nil else {
-                completionHandler(.failure(.failedRequest))
-                return
-            }
-            
-            guard response?.checkResponse == true else {
-                return completionHandler(.failure(.outOfReponseCode))
-            }
-            
-            guard let data = data else {
-                completionHandler(.failure(.dataIsEmpty))
-                return
-            }
-            
-            completionHandler(.success(data))
-        }
-        return task
     }
     
 }
