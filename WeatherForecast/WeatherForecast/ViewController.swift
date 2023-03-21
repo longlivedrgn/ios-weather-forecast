@@ -46,11 +46,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         print(latitude)
         print(longitude)
         guard let location = locations.last else { return }
-//        let findLocation = CLLocation(latitude: latitude, longitude: longitude)
         let locale = Locale(identifier: "Ko-kr") //원하는 언어의 나라 코드를 넣어주시면 됩니다.
         geocoder.reverseGeocodeLocation(location, preferredLocale: locale, completionHandler: {(placemarks, error) in
-            guard let address: [CLPlacemark] = placemarks else { return }
-            print(address.first?.name)
+            guard let address = placemarks else { return }
+            print(address.last?.name ?? "띠용")
         })
     }
     
