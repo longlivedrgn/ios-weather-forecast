@@ -52,5 +52,30 @@ final class WeatherAPIManager {
 
         return weatherInformation
     }
+    
+    func fetchImage(icon: String) -> Data? {
+        let url = WeatherAPI.makeImageURL(icon: icon)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        let group = DispatchGroup()
+        var imageData: Data?
+        
+        group.enter()
+        let task = networkModel.task(urlRequest: urlRequest) { result in
+            
+            switch result {
+            case .success(let data):
+                imageData = data
+            case .failure(let error):
+                imageData = nil
+            }
+            group.leave()
+        }
+
+        task.resume()
+        group.wait()
+
+        return imageData
+    }
 }
  

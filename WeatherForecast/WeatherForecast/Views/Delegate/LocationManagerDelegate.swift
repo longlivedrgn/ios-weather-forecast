@@ -10,9 +10,13 @@ import CoreLocation
 
 final class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     
+    var address = ""
+    var coordinate = CLLocation()
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         guard let recentLocation = manager.location else {
+            print("?")
             return
         }
         
@@ -25,8 +29,11 @@ final class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
             }
             
             guard let firstLocation = placemark?.last else { return }
-            print(firstLocation)
-            
+            guard let name = firstLocation.name else { return }
+            guard let location = firstLocation.location else { return }
+            self.address = name
+            self.coordinate = location
+            return
         }
     }
     
