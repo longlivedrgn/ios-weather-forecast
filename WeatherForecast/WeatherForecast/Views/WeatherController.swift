@@ -5,18 +5,18 @@
 //  Created by Sunny on 2023/03/24.
 //
 
+/*
+ - 연달아서 사용한 completionHandler 코드 대신 aync/await 코드 리팩토링
+ */
+
 import UIKit
 import CoreLocation
 
 final class WeatherController {
     
-    init() {
-        locationManager.locationDelegate = self
-    }
-    
     struct CurrentWeather {
-        let image: UIImage
-        let address: String?
+        let image: UIImage?
+        let address: String
         let temperatures: Temperature
     }
     
@@ -26,11 +26,16 @@ final class WeatherController {
         let temperature: Double
     }
     
-    private let networkModel = NetworkModel()
-    private let weatherAPIManager = WeatherAPIManager(networkModel: NetworkModel(session: URLSession.shared))
+    private var weatherAPIManager: WeatherAPIManager?
     private let locationManager = LocationManager()
     
-    var currentWeather: CurrentWeather?
+    weak var currentWeatherDelegate: CurrentWeatherDelegate?
+        
+    init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
+        weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
+        
+        locationManager.locationDelegate = self
+    }
     
     func makeCoordinate(from location: CLLocation) -> Coordinate {
         
@@ -42,30 +47,38 @@ final class WeatherController {
     
     func makeCurrentWeather(location: CLLocation) {
         
-        // locationManager: coordinate -> address
-        locationManager.changeGeocoder(location: location) { place in
-
-            print(place?.locality)
-            print(place?.subLocality)
-            let address = "\(place?.locality) \(place?.subLocality)"
+        // 1. coordinate 주소 가져오기
+        let coordinate = self.makeCoordinate(from: location)
+        
+        // 2. address 생성하기
+        locationManager.changeGeocoder(location: location) { [weak self] place in
             
-            // 1. coordinate 주소 가져오기
-            let coordinate = self.makeCoordinate(from: location)
-            // 2. currentWeather 가져오기
-            guard let weatherData = self.weatherAPIManager.fetchWeatherInformation(of: .currentWeather, in: coordinate) as? CurrentWeatherDTO else { return }
+            guard let locality = place?.locality, let subLocality = place?.subLocality else { return }
             
-            guard let imageIcon = weatherData.weather.first?.icon else { return }
-            guard let weatherImage = self.weatherAPIManager.fetchWeatherImage(icon: imageIcon) else { return }
+            let address = "\(locality) \(subLocality)"
             
-            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
+            // 3. currentWeather 가져오기
+            self?.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { [weak self] data in
+                
+                guard let weatherData = data as? CurrentWeatherDTO else { return }
+                
+                guard let icon = weatherData.weather.first?.icon else { return }
+                
+                // 4. 이미지 가져오기
+                self?.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
+                    
+                    let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
+                    
+                    self?.currentWeatherDelegate?.send(current: currentWeatherData)
+                }
+            }
             
-            self.currentWeather = currentWeatherData
         }
     }
 }
 
 
-extension WeatherController: locationDelegate {
+extension WeatherController: LocationDelegate {
     func send(location: CLLocation) {
         makeCurrentWeather(location: location)
     }

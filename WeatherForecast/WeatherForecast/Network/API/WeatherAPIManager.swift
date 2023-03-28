@@ -29,60 +29,46 @@ final class WeatherAPIManager {
         return urlRequest
     }
     
-    func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) -> Decodable? {
+    func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate, completion: @escaping (Decodable?) -> Void) {
         
         let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
-        let group = DispatchGroup()
-        var weatherInformation: Decodable?
         
-         group.enter()
         let task = networkModel.task(urlRequest: urlRequest) { result in
             
             switch result {
             case .success(let data):
                 do {
                     let decodedData = try self.networkModel.decode(from: data, to: weatherAPI.decodingType)
-                    weatherInformation = decodedData
+                    completion(decodedData)
                 } catch {
                     print(error.localizedDescription)
-                    weatherInformation = nil
+                    completion(nil)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
-                weatherInformation = nil
+                completion(nil)
             }
-            group.leave()
         }
 
         task.resume()
-        group.wait()
-
-        return weatherInformation
     }
     
-    func fetchWeatherImage(icon: String) -> UIImage? {
+    func fetchWeatherImage(icon: String, completion: @escaping (UIImage?) -> Void) {
         
         let urlRequest = makeImageRequest(icon)
-        let group = DispatchGroup()
-        var weatherImage: UIImage?
         
-        group.enter()
         let task = networkModel.task(urlRequest: urlRequest) { result in
             
             switch result {
             case .success(let data):
-                weatherImage = UIImage(data: data)
+                completion(UIImage(data: data))
             case .failure(let error):
                 print(error.localizedDescription)
-                weatherImage = nil
+                completion(nil)
             }
-            group.leave()
         }
         
         task.resume()
-        group.wait()
-        
-        return weatherImage
     }
 }
  

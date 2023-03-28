@@ -10,7 +10,7 @@ import CoreLocation
 
 class LocationManager: CLLocationManager {
     
-    weak var locationDelegate: locationDelegate?
+    weak var locationDelegate: LocationDelegate?
     
     override init() {
         super.init()
@@ -66,8 +66,4 @@ extension LocationManager: CLLocationManagerDelegate {
             return
         }
     }
-}
-
-protocol locationDelegate: AnyObject {
-    func send(location: CLLocation)
 }
