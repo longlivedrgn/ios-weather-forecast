@@ -15,7 +15,7 @@ final class WeatherController {
     }
     
     struct CurrentWeather {
-        let image: UIImage
+        let image: UIImage?
         let address: String?
         let temperatures: Temperature
     }
@@ -30,7 +30,12 @@ final class WeatherController {
     private let weatherAPIManager = WeatherAPIManager(networkModel: NetworkModel(session: URLSession.shared))
     private let locationManager = LocationManager()
     
-    var currentWeather: CurrentWeather?
+    var currentWeather: CurrentWeather? {
+        didSet {
+            // 클로저 실행
+        }
+    }
+//    var currentWeather: Box<CurrentWeather>?
     
     func makeCoordinate(from location: CLLocation) -> Coordinate {
         
@@ -40,27 +45,110 @@ final class WeatherController {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
+//    func makeCurrentWeather(location: CLLocation) {
+//
+//        var address: String?
+//        var currentWeatherDTO: CurrentWeatherDTO?
+//        var weatherImage: UIImage?
+//
+//        let coordinate = self.makeCoordinate(from: location)
+//
+//        let group = DispatchGroup()
+//
+//        group.enter()
+//        locationManager.changeGeocoder(location: location) { place in
+//
+//            print("비동기 테스트 안 1")
+//
+////            print(place?.locality)
+////            print(place?.subLocality)
+////            address = "\(place?.locality) \(place?.subLocality)"
+//            address = place?.description
+//            group.leave()
+//        }
+//
+//        group.notify(queue: .main) {
+//            print("비동기 테스트 밖 1")
+//            print(address)
+//        }
+//
+//        group.enter()
+//        self.weatherAPIManager.fetchWeatherInformation(of: .currentWeather, in: coordinate) { weatherData in
+//
+//            print("비동기 테스트 안 2")
+//
+//            guard let data = weatherData as? CurrentWeatherDTO else {
+//                print("hey?")
+//                return
+//            }
+//            currentWeatherDTO = data
+//            group.leave()
+//        }
+//
+////        guard let imageIcon = currentWeatherDTO?.weather.first?.icon else {
+////            return
+////        }
+//        group.notify(queue: .main) {
+//            print("비동기 테스트 밖 2")
+//            print(currentWeatherDTO)
+//        }
+//
+////        self.weatherAPIManager.fetchWeatherImage(icon: imageIcon) { image in
+////
+////            print("비동기 테스트 안 3")
+////            weatherImage = image
+////        }
+//
+//        group.enter()
+//        self.weatherAPIManager.fetchWeatherImage(icon: "03d") { image in
+//
+//            print("비동기 테스트 안 3")
+//            weatherImage = image
+//            group.leave()
+//        }
+//
+//        group.notify(queue: .main) {
+//            print("비동기 테스트 밖 3")
+//            guard let currentWeatherDTO = currentWeatherDTO else { return }
+//
+//            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: currentWeatherDTO.temperature)
+//            self.currentWeather = currentWeatherData
+//
+//            print(self.currentWeather)
+//        }
+//    }
+    
     func makeCurrentWeather(location: CLLocation) {
         
-        // locationManager: coordinate -> address
-        locationManager.changeGeocoder(location: location) { place in
-
-            print(place?.locality)
-            print(place?.subLocality)
-            let address = "\(place?.locality) \(place?.subLocality)"
+//        var address: String?
+//        var currentWeatherDTO: CurrentWeatherDTO?
+//        var weatherImage: UIImage?
+        
+        let coordinate = self.makeCoordinate(from: location)
+        print(coordinate)
+        
+        Task {
+            // 1. address
+            let place = try? await self.locationManager.changeGeocoder(location: location)
+            let address = place?.description
+            print(address)
             
-            // 1. coordinate 주소 가져오기
-            let coordinate = self.makeCoordinate(from: location)
-            // 2. currentWeather 가져오기
-            guard let weatherData = self.weatherAPIManager.fetchWeatherInformation(of: .currentWeather, in: coordinate) as? CurrentWeatherDTO else { return }
+            // 2. currentWeatherDTO
+            guard let weatherData = weatherAPIManager.fetchWeatherInformation(of: .currentWeather, in: coordinate) as? CurrentWeatherDTO else { return }
+            print(weatherData)
             
-            guard let imageIcon = weatherData.weather.first?.icon else { return }
-            guard let weatherImage = self.weatherAPIManager.fetchWeatherImage(icon: imageIcon) else { return }
+            // 3. image
+            guard let icon = weatherData.weather.first?.icon else { return }
+            let image = weatherAPIManager.fetchWeatherImage(icon: icon)
+            print(image)
             
-            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            
+            // 4. currentWeather
+            let currentWeatherData = CurrentWeather(image: image, address: address, temperatures: weatherData.temperature)
             self.currentWeather = currentWeatherData
+            print(self.currentWeather)
         }
+        
+        print("hey : \(self.currentWeather)")
     }
 }
 
@@ -69,5 +157,22 @@ extension WeatherController: locationDelegate {
     func send(location: CLLocation) {
         makeCurrentWeather(location: location)
     }
+}
+
+final class Box<Value> {
+    var value: Value {
+        didSet {
+            action?(value)
+        }
+    }
     
+    init(value: Value) {
+        self.value = value
+    }
+    
+    var action: ((Value) -> Void)?
+    
+    func bind(_ action: @escaping (Value) -> Void) {
+        self.action = action
+    }
 }

@@ -16,6 +16,10 @@ class WeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        weatherController.currentWeather?.bind({ currentWeather in
+            // 업데이트
+        })
     }
     
 }

@@ -19,21 +19,26 @@ class LocationManager: CLLocationManager {
         delegate = self
     }
     
-    func changeGeocoder(location: CLLocation, completion: @escaping (CLPlacemark?) -> Void) {
+    func changeGeocoder(location: CLLocation) async throws -> CLPlacemark? {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")
         
-        geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemark, error in
-            
-            guard error == nil else {
-                completion(nil)
-                return
-            }
-            
-            guard let firstLocation = placemark?.last else { return }
-            completion(firstLocation)
-        }
+        guard let firstLocation = try await geocoder.reverseGeocodeLocation(location).last else { return nil }
+
+//        geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemark, error in
+//
+//            guard error == nil else {
+////                completion(nil)
+//                return
+//            }
+//
+//            guard let firstLocation = placemark?.last else { return }
+////            completion(firstLocation)
+//        }
+        return firstLocation
     }
+    
+    
 }
 
 extension LocationManager: CLLocationManagerDelegate {

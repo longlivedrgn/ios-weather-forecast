@@ -35,7 +35,8 @@ final class WeatherAPIManager {
         let group = DispatchGroup()
         var weatherInformation: Decodable?
         
-         group.enter()
+        group.enter()
+        
         let task = networkModel.task(urlRequest: urlRequest) { result in
             
             switch result {
@@ -43,13 +44,16 @@ final class WeatherAPIManager {
                 do {
                     let decodedData = try self.networkModel.decode(from: data, to: weatherAPI.decodingType)
                     weatherInformation = decodedData
+//                    completion(decodedData)
                 } catch {
                     print(error.localizedDescription)
                     weatherInformation = nil
+//                    completion(nil)
                 }
             case .failure(let error):
                 print(error.localizedDescription)
                 weatherInformation = nil
+//                completion(nil)
             }
             group.leave()
         }
@@ -72,9 +76,11 @@ final class WeatherAPIManager {
             switch result {
             case .success(let data):
                 weatherImage = UIImage(data: data)
+//                completion(UIImage(data: data))
             case .failure(let error):
                 print(error.localizedDescription)
                 weatherImage = nil
+//                completion(nil)
             }
             group.leave()
         }
