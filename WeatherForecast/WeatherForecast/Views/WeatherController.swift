@@ -44,7 +44,6 @@ final class WeatherController {
         let group = DispatchGroup()
         var data: CurrentWeather?
         
-        group.enter()
         locationManager.changeGeocoder(location: location) { place in
 
             print(place?.locality)
@@ -62,11 +61,8 @@ final class WeatherController {
             let currentWeather = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
             data = currentWeather
             print("여긴 안: \(data)")
-            
-            group.leave()
+
         }
-        
-        group.wait()
         
         print("여긴 밖: \(data)")
     }

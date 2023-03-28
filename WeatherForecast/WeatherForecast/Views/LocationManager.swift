@@ -16,7 +16,6 @@ class LocationManager: CLLocationManager {
         super.init()
         desiredAccuracy = kCLLocationAccuracyKilometer
         requestWhenInUseAuthorization()
-        
         delegate = self
     }
     
@@ -42,13 +41,13 @@ extension LocationManager: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        print("locationMAnager, didupdateLocation 실행중")
-        
-        guard let recentLocation = self.location else {
-            print("LocationManager: recentLocation에 들어온 주소 없음.")
-            return
+        if locations.last != manager.location {
+            guard let recentLocation = locations.last else {
+                print("LocationManager: recentLocation에 들어온 주소 없음.")
+                return
+            }
+            locationDelegate?.send(location: recentLocation)
         }
-        locationDelegate?.send(location: recentLocation)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

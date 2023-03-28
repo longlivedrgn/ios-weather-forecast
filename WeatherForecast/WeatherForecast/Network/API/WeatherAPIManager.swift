@@ -72,11 +72,9 @@ final class WeatherAPIManager {
             switch result {
             case .success(let data):
                 weatherImage = UIImage(data: data)
-                return
             case .failure(let error):
                 print(error.localizedDescription)
                 weatherImage = nil
-                return
             }
             group.leave()
         }
