@@ -23,16 +23,28 @@ class WeatherController {
         coreLocationManger.delegate = locationDelegate
     }
     
-    struct CurrentWeather {
+    struct CurrentWeather: Hashable {
+        
         let image: UIImage
         let address: String
         let temperatures: Temperature
+        let identifier = UUID()
+        
+        static func == (lhs: WeatherController.CurrentWeather, rhs: WeatherController.CurrentWeather) -> Bool {
+            return lhs.identifier == rhs.identifier
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(identifier)
+        }
+        
     }
     
-    struct FiveDaysForecast {
+    struct FiveDaysForecast: Hashable {
         let image: UIImage
         let date: String
         let temperature: Double
+        
     }
     
     lazy var currentWeathers: CurrentWeather? = {
