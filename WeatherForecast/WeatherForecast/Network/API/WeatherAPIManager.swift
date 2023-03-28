@@ -22,6 +22,13 @@ final class WeatherAPIManager {
         return urlRequest
     }
     
+    func makeImageRequest(_ icon: String) -> URLRequest {
+        let url = WeatherAPI.makeImageURL(icon: icon)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        return urlRequest
+    }
+    
     func fetchWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) -> Decodable? {
         
         let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
@@ -51,6 +58,33 @@ final class WeatherAPIManager {
         group.wait()
 
         return weatherInformation
+    }
+    
+    func fetchWeatherImage(icon: String) -> UIImage? {
+        
+        let urlRequest = makeImageRequest(icon)
+        let group = DispatchGroup()
+        var weatherImage: UIImage?
+        
+        group.enter()
+        let task = networkModel.task(urlRequest: urlRequest) { result in
+            
+            switch result {
+            case .success(let data):
+                weatherImage = UIImage(data: data)
+                return
+            case .failure(let error):
+                print(error.localizedDescription)
+                weatherImage = nil
+                return
+            }
+            group.leave()
+        }
+        
+        task.resume()
+        group.wait()
+        
+        return weatherImage
     }
 }
  

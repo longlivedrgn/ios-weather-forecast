@@ -25,8 +25,7 @@ final class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
             }
             
             guard let firstLocation = placemark?.last else { return }
-            print(firstLocation)
-            
+            print("나는 locationManager: \(firstLocation)")
         }
     }
     

@@ -39,8 +39,9 @@ struct Temperature: Decodable {
 }
 
 struct Weather: Decodable {
-    let id: Double
-    let main, description, icon: String
+//    let id: Double
+//    let main, description
+    let icon: String
 }
 
 
