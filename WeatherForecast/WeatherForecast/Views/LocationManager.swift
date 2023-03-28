@@ -19,7 +19,6 @@ class LocationManager: CLLocationManager {
         delegate = self
     }
     
-    // location 받아서 Geocoder로 변환하는 함수
     func changeGeocoder(location: CLLocation, completion: @escaping (CLPlacemark?) -> Void) {
         let geocoder = CLGeocoder()
         let locale = Locale(identifier: "Ko-kr")

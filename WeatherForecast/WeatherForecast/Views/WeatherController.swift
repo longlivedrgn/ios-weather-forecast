@@ -30,6 +30,8 @@ final class WeatherController {
     private let weatherAPIManager = WeatherAPIManager(networkModel: NetworkModel(session: URLSession.shared))
     private let locationManager = LocationManager()
     
+    var currentWeather: CurrentWeather?
+    
     func makeCoordinate(from location: CLLocation) -> Coordinate {
         
         let latitude = location.coordinate.latitude
@@ -41,9 +43,6 @@ final class WeatherController {
     func makeCurrentWeather(location: CLLocation) {
         
         // locationManager: coordinate -> address
-        let group = DispatchGroup()
-        var data: CurrentWeather?
-        
         locationManager.changeGeocoder(location: location) { place in
 
             print(place?.locality)
@@ -58,13 +57,10 @@ final class WeatherController {
             guard let imageIcon = weatherData.weather.first?.icon else { return }
             guard let weatherImage = self.weatherAPIManager.fetchWeatherImage(icon: imageIcon) else { return }
             
-            let currentWeather = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            data = currentWeather
-            print("여긴 안: \(data)")
-
+            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
+            
+            self.currentWeather = currentWeatherData
         }
-        
-        print("여긴 밖: \(data)")
     }
 }
 

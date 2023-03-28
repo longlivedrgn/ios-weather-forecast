@@ -35,7 +35,7 @@ final class WeatherAPIManager {
         let group = DispatchGroup()
         var weatherInformation: Decodable?
         
-        group.enter()
+         group.enter()
         let task = networkModel.task(urlRequest: urlRequest) { result in
             
             switch result {
