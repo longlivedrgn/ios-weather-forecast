@@ -27,6 +27,12 @@ extension WeatherViewController: CurrentWeatherDelegate {
     func send(current: WeatherController.CurrentWeather) {
         print("viewController: \(current)")
     }
+}
+
+extension WeatherViewController: FiveDaysForecastDelegate {
     
+    func send(fiveDaysForecast: WeatherController.FiveDaysForecast) {
+        print("viewController: \(fiveDaysForecast)")
+    }
 }
 

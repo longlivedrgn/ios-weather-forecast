@@ -21,9 +21,9 @@ final class WeatherController {
     }
     
     struct FiveDaysForecast {
-        let image: UIImage
-        let date: String
-        let temperature: Double
+        let image: UIImage?
+        let date: String?
+        let temperature: Double?
     }
     
     private var weatherAPIManager: WeatherAPIManager?
@@ -72,7 +72,27 @@ final class WeatherController {
                     self?.currentWeatherDelegate?.send(current: currentWeatherData)
                 }
             }
+        }
+    }
+    
+    func makeFiveDaysForcast(location: CLLocation) {
+        
+        // 좌표 만들기
+        let coordinate = makeCoordinate(from: location)
+        
+        self.weatherAPIManager?.fetchWeatherInformation(of: .fiveDaysForecast, in: coordinate) { [weak self] data in
+            guard let weatherData = data as? FiveDaysForecastDTO else { return }
             
+            let dayList = weatherData.list
+            for day in dayList {
+                let time = day.time
+                let temperature = day.temperature.currentTemperature
+                
+                guard let iconString = day.weather.first?.icon else { return }
+                self?.weatherAPIManager?.fetchWeatherImage(icon: iconString) { [weak self] weatherImage in
+                    let fiveDaysForcast = FiveDaysForecast(image: weatherImage, date: time, temperature: temperature)
+                }
+            }
         }
     }
 }
@@ -81,6 +101,6 @@ final class WeatherController {
 extension WeatherController: LocationDelegate {
     func send(location: CLLocation) {
         makeCurrentWeather(location: location)
+        makeFiveDaysForcast(location: location)
     }
-    
 }

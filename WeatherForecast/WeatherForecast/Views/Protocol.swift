@@ -15,3 +15,7 @@ protocol LocationDelegate: AnyObject {
 protocol CurrentWeatherDelegate: AnyObject {
     func send(current: WeatherController.CurrentWeather)
 }
+
+protocol FiveDaysForecastDelegate: AnyObject {
+    func send(fiveDaysForecast: WeatherController.FiveDaysForecast)
+}

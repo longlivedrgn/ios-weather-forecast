@@ -49,7 +49,6 @@ final class WeatherAPIManager {
                 completion(nil)
             }
         }
-
         task.resume()
     }
     
