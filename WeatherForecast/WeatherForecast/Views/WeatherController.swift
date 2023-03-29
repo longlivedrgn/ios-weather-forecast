@@ -16,8 +16,8 @@ final class WeatherController {
     
     struct CurrentWeather {
         let image: UIImage?
-        let address: String
-        let temperatures: Temperature
+        let address: String?
+        let temperatures: Temperature?
     }
     
     struct FiveDaysForecast {
@@ -28,6 +28,8 @@ final class WeatherController {
     
     private var weatherAPIManager: WeatherAPIManager?
     private let locationManager = LocationManager()
+    var currentWeather: CurrentWeather?
+    var fiveForecast: [FiveDaysForecast]?
     
     weak var currentWeatherDelegate: CurrentWeatherDelegate?
         
@@ -67,14 +69,12 @@ final class WeatherController {
                 // 4. 이미지 가져오기
                 self?.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
                     
-                    let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-                    
-                    self?.currentWeatherDelegate?.send(current: currentWeatherData)
+                    self?.currentWeather = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
                 }
             }
         }
     }
-    
+    // notify tkdydgkwk
     func makeFiveDaysForcast(location: CLLocation) {
         
         // 좌표 만들기
@@ -84,14 +84,27 @@ final class WeatherController {
             guard let weatherData = data as? FiveDaysForecastDTO else { return }
             
             let dayList = weatherData.list
+//            var fiveForecastWeathers: [FiveDaysForecast]
+            
+            let group = DispatchGroup()
+            
             for day in dayList {
                 let time = day.time
                 let temperature = day.temperature.currentTemperature
-                
                 guard let iconString = day.weather.first?.icon else { return }
-                self?.weatherAPIManager?.fetchWeatherImage(icon: iconString) { [weak self] weatherImage in
-                    let fiveDaysForcast = FiveDaysForecast(image: weatherImage, date: time, temperature: temperature)
+                group.enter()
+                self?.weatherAPIManager?.fetchWeatherImage(icon: iconString) { iconImage in
+                    guard let iconImage = iconImage else { return }
+                    let fiveDaysForecast = FiveDaysForecast(image: iconImage, date: time, temperature: temperature)
+                    self?.fiveForecast?.append(fiveDaysForecast)
+                    print("한번")
+                    group.leave()
                 }
+            }
+            
+            group.notify(queue: .main) {
+            // 여기서 delegate을 사용하는 것도 괜찮을듯!
+            // 위의 CurrentWeather도 이런 방법으로 해결하는 거 괜찮을듯?
             }
         }
     }
