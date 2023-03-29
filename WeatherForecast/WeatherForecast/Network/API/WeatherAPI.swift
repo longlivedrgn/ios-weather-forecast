@@ -23,20 +23,26 @@ enum WeatherAPI: String {
     }
 }
 
+// 가변 매개변수, urlcomponent -> urlrequest
+
 extension WeatherAPI {
     
-    static let baseURL = "https://api.openweathermap.org"
+    static let baseURL = "https://api.openweathermap.org/data/2.5/"
     static let baseImageURL = "https://openweathermap.org"
     
     var path: String {
         
+        // MARK: baseURL 과 path 변경
         switch self {
         case .currentWeather:
-            return "/data/2.5/weather?"
+            return "weather?"
         case .fiveDaysForecast:
-            return "/data/2.5/forecast?"
+            return "forecast?"
         }
     }
+    
+    // method 선택, 쿼리 붙이는 메서드
+    // endpoint
     
     func makeWeatherURL(coordinate: Coordinate) -> URL {
         

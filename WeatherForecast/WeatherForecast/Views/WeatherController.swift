@@ -14,7 +14,9 @@ import CoreLocation
 
 final class WeatherController {
     
-    struct CurrentWeather {
+    struct CurrentWeather: Identifiable {
+        let id = UUID()
+        
         let image: UIImage?
         let address: String
         let temperatures: Temperature
@@ -30,6 +32,8 @@ final class WeatherController {
     private let locationManager = LocationManager()
     
     weak var currentWeatherDelegate: CurrentWeatherDelegate?
+    
+    var currentWeather: CurrentWeather?
         
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
         weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
@@ -69,6 +73,7 @@ final class WeatherController {
                     
                     let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
                     
+                    self?.currentWeather = currentWeatherData
                     self?.currentWeatherDelegate?.send(current: currentWeatherData)
                 }
             }
