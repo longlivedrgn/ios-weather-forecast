@@ -114,6 +114,8 @@
 		4F2D796F29C04D8E00C30BE2 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				80985D6629D5C035008BF073 /* DTO */,
+				80985D6429D5BE1F008BF073 /* Error */,
 				8797480929C04CFE00C5F3D5 /* Model */,
 				4FC8C12329C2A3A2005005A9 /* API */,
 			);
@@ -136,6 +138,23 @@
 				80BAF7F729CA93B100783EC6 /* LocationManagerDelegate.swift */,
 			);
 			path = Delegate;
+			sourceTree = "<group>";
+		};
+		80985D6429D5BE1F008BF073 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				87ED40A829C3069B0018EE21 /* NetworkError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		80985D6629D5C035008BF073 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				8797480A29C04D1100C5F3D5 /* CurrentWeatherDTO.swift */,
+				87B6EE5C29C2A70A00BB19BC /* FiveDaysForecastDTO.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		80BAF7FA29CA984D00783EC6 /* Views */ = {
@@ -161,10 +180,7 @@
 		8797480929C04CFE00C5F3D5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				87ED40A829C3069B0018EE21 /* NetworkError.swift */,
 				879E476629C40383002A4496 /* NetworkModel.swift */,
-				8797480A29C04D1100C5F3D5 /* CurrentWeatherDTO.swift */,
-				87B6EE5C29C2A70A00BB19BC /* FiveDaysForecastDTO.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
