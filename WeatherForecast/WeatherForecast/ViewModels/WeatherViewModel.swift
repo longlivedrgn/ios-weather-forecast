@@ -12,7 +12,7 @@
 import UIKit
 import CoreLocation
 
-final class WeatherController {
+final class WeatherViewModel {
     
     struct CurrentWeather: Identifiable {
         let id = UUID()
@@ -33,7 +33,7 @@ final class WeatherController {
     private var weatherAPIManager: WeatherAPIManager?
     private let locationManager = LocationManager()
     
-    weak var currentWeatherDelegate: CurrentWeatherDelegate?
+    weak var weatherDelegate: WeatherDelegate?
     
     var currentWeather: CurrentWeather?
     var forecaseWeather: [FiveDaysForecast] = []
@@ -85,7 +85,7 @@ final class WeatherController {
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
             
             self?.currentWeather = currentWeatherData
-            self?.currentWeatherDelegate?.sendCurrent()
+            self?.weatherDelegate?.sendCurrent()
         }
     }
     
@@ -113,7 +113,7 @@ final class WeatherController {
             self?.forecaseWeather.append(test)
             
             if self?.forecaseWeather.count == 40 {
-                self?.currentWeatherDelegate?.sendForecast()
+                self?.weatherDelegate?.sendForecast()
             }
         }
     }
@@ -135,7 +135,7 @@ final class WeatherController {
 
 }
 
-extension WeatherController: LocationDelegate {
+extension WeatherViewModel: LocationDelegate {
     func send(location: CLLocation) {
         makeWeatherData(location: location)
     }

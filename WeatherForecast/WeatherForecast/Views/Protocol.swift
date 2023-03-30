@@ -12,7 +12,7 @@ protocol LocationDelegate: AnyObject {
     func send(location: CLLocation)
 }
 
-protocol CurrentWeatherDelegate: AnyObject {
+protocol WeatherDelegate: AnyObject {
     func sendCurrent()
     func sendForecast()
 }
