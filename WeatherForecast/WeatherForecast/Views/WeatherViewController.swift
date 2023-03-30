@@ -11,19 +11,12 @@ final class WeatherViewController: UIViewController {
     
     private var weatherController = WeatherController()
     
-    private var collectionView: UICollectionView {
+    // collectionView는 초기화 시, layout 설정을 해주지 않으면 초기화 불가능.
+    private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
-        
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
-        layout.collectionView?.backgroundColor = .blue
-        
-        let cv = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
-        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         return cv
-    }
+    }()
     
     // MARK: 1. section 생성
     private enum ForecastSection: Int {
@@ -40,16 +33,19 @@ final class WeatherViewController: UIViewController {
         
         configureCollectionView()
         configureDataSource()
-        //        configureLayout()
+        configureLayout()
     }
     
 }
 
 extension WeatherViewController {
     
-    //    private func configureLayout() {
-    //        collectionView.frame = view.bounds
-    //    }
+    private func configureLayout() {
+        collectionView.frame = view.bounds
+        collectionView.backgroundColor = .lightGray
+        
+        view.addSubview(collectionView)
+    }
     
     // MARK: collectionView의 layout configuration 설정
     private func configureCollectionView() {
@@ -57,7 +53,7 @@ extension WeatherViewController {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             
             var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
-            configuration.headerMode = .supplementary
+//            configuration.headerMode = .supplementary
             
             let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
             
@@ -69,6 +65,7 @@ extension WeatherViewController {
     
     // MARK: DiffableDataSource 설정
     private func configureDataSource() {
+        
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, WeatherController.CurrentWeather> { cell, indexPath, currentWeather in
             
             var contentConfiguration = UIListContentConfiguration.subtitleCell()
@@ -91,12 +88,24 @@ extension WeatherViewController {
         
     }
     
+    private func updateSnapshot() {
+        guard let currentWeather = weatherController.currentWeather?.id else { return }
+//                as? WeatherController.CurrentWeather.ID else { return }
+        
+        var snapshot = NSDiffableDataSourceSnapshot<ForecastSection,WeatherController.CurrentWeather.ID>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems([currentWeather], toSection: .main)
+        forecastDataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
 }
 
 extension WeatherViewController: CurrentWeatherDelegate {
     
     func send(current: WeatherController.CurrentWeather) {
         print("viewController: \(current)")
+        
+        updateSnapshot()
     }
     
 }
