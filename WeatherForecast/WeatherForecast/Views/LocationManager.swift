@@ -8,15 +8,18 @@
 import UIKit
 import CoreLocation
 
-class LocationManager: CLLocationManager {
+class LocationManager: NSObject {
     
     weak var locationDelegate: LocationDelegate?
+    private var locationManager: CLLocationManager?
     
     override init() {
         super.init()
-        desiredAccuracy = kCLLocationAccuracyKilometer
-        requestWhenInUseAuthorization()
-        delegate = self
+        locationManager = CLLocationManager()
+        
+        locationManager?.desiredAccuracy = kCLLocationAccuracyKilometer
+        locationManager?.requestWhenInUseAuthorization()
+        locationManager?.delegate = self
     }
     
     func changeGeocoder(location: CLLocation, completion: @escaping (CLPlacemark?) -> Void) {
