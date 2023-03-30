@@ -76,11 +76,6 @@ extension WeatherViewController {
             cell.contentConfiguration = contentConfiguration
         }
         
-        UICollectionView.SupplementaryRegistration(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView, elementKind, indexPath in
-            
-            
-        }
-        
         forecastDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier -> UICollectionViewCell in
             
             guard let data = self.weatherController.currentWeather else {
