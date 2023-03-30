@@ -14,22 +14,24 @@ import CoreLocation
 
 final class WeatherController {
     
-    struct CurrentWeather {
+    struct CurrentWeather: Identifiable {
+        let id = UUID()
         let image: UIImage?
         let address: String?
         let temperatures: Temperature?
     }
     
-    struct FiveDaysForecast {
-        let image: UIImage?
-        let date: String?
-        let temperature: Double?
+    struct FiveDaysForecast: Identifiable {
+        let id = UUID()
+        let image: UIImage
+        let date: String
+        let temperature: Double
     }
     
     private var weatherAPIManager: WeatherAPIManager?
     private let locationManager = LocationManager()
     var currentWeather: CurrentWeather?
-    var fiveForecast: [FiveDaysForecast]?
+    var fiveForecast: [FiveDaysForecast] = []
     
     weak var currentWeatherDelegate: CurrentWeatherDelegate?
     weak var fiveDaysForecastDelegate: FiveDaysForecastDelegate?
@@ -99,12 +101,13 @@ final class WeatherController {
                 self.weatherAPIManager?.fetchWeatherImage(icon: iconString, completion: { iconImage in
                     guard let iconImage = iconImage else { return }
                     let fiveDaysForecast = FiveDaysForecast(image: iconImage, date: time, temperature: temperature)
-                    print(fiveDaysForecast)
-                    self.fiveForecast?.append(fiveDaysForecast)
+                    self.fiveForecast.append(fiveDaysForecast)
                     group.leave()
                 })
             }
             group.notify(queue: .main) {
+//                self.
+//                print(self.fiveForecast)
                 self.fiveDaysForecastDelegate?.notifyToUpdateFiveDaysForecast()
             }
         })
