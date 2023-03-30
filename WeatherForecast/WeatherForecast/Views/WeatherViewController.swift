@@ -76,6 +76,11 @@ extension WeatherViewController {
             cell.contentConfiguration = contentConfiguration
         }
         
+        UICollectionView.SupplementaryRegistration(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView, elementKind, indexPath in
+            
+            
+        }
+        
         forecastDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier -> UICollectionViewCell in
             
             guard let data = self.weatherController.currentWeather else {
@@ -102,10 +107,14 @@ extension WeatherViewController {
 
 extension WeatherViewController: CurrentWeatherDelegate {
     
-    func send(current: WeatherController.CurrentWeather) {
-        print("viewController: \(current)")
-        
+    func sendCurrent() {
+        // header view update
+        print(weatherController.currentWeather)
         updateSnapshot()
+    }
+    
+    func sendForecast() {
+        print(weatherController.forecaseWeather)
     }
     
 }

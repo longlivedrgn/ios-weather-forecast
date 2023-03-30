@@ -56,7 +56,8 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse:
-            manager.startUpdatingLocation()
+//            manager.startUpdatingLocation()
+            manager.requestLocation()
             // 여기서 viewcontroller에다가 delegate를 준 다음, 이 신호를 받은 viewcontroller는 weatherController의 함수 실행
         case .denied, .restricted:
             print("ggod")

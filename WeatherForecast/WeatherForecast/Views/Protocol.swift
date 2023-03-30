@@ -13,5 +13,6 @@ protocol LocationDelegate: AnyObject {
 }
 
 protocol CurrentWeatherDelegate: AnyObject {
-    func send(current: WeatherController.CurrentWeather)
+    func sendCurrent()
+    func sendForecast()
 }

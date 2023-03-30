@@ -22,8 +22,10 @@ final class WeatherController {
         let temperatures: Temperature
     }
     
-    struct FiveDaysForecast {
-        let image: UIImage
+    struct FiveDaysForecast: Identifiable {
+        let id = UUID()
+        
+        var image: UIImage?
         let date: String
         let temperature: Double
     }
@@ -34,6 +36,7 @@ final class WeatherController {
     weak var currentWeatherDelegate: CurrentWeatherDelegate?
     
     var currentWeather: CurrentWeather?
+    var forecaseWeather: [FiveDaysForecast] = []
         
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
         weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
@@ -41,51 +44,77 @@ final class WeatherController {
         locationManager.locationDelegate = self
     }
     
+    // MARK: func
     func makeCoordinate(from location: CLLocation) -> Coordinate {
-        
+
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
         
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-    func makeCurrentWeather(location: CLLocation) {
+    private func makeCurrentWeather(location: CLLocation) {
         
-        // 1. coordinate 주소 가져오기
-        let coordinate = self.makeCoordinate(from: location)
+        let coordinate = makeCoordinate(from: location)
         
-        // 2. address 생성하기
         locationManager.changeGeocoder(location: location) { [weak self] place in
             
             guard let locality = place?.locality, let subLocality = place?.subLocality else { return }
             
             let address = "\(locality) \(subLocality)"
             
-            // 3. currentWeather 가져오기
             self?.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { [weak self] data in
                 
                 guard let weatherData = data as? CurrentWeatherDTO else { return }
                 
                 guard let icon = weatherData.weather.first?.icon else { return }
                 
-                // 4. 이미지 가져오기
                 self?.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
                     
                     let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
                     
                     self?.currentWeather = currentWeatherData
-                    self?.currentWeatherDelegate?.send(current: currentWeatherData)
+                    self?.currentWeatherDelegate?.sendCurrent()
                 }
             }
-            
         }
     }
-}
+    
+    private func makeForecastWeather(location: CLLocation) {
+        
+        let coordinate = self.makeCoordinate(from: location)
+        
+        self.weatherAPIManager?.fetchWeatherInformation(of: .fiveDaysForecast, in: coordinate) { data in
+            
+            guard let forecastData = data as? FiveDaysForecastDTO else { return }
+            
+            for eachData in forecastData.list {
+                
+                guard let icon = eachData.weather.first?.icon else { return }
+                
+                self.weatherAPIManager?.fetchWeatherImage(icon: icon) { image in
+                    let test = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
+                    
+                    self.forecaseWeather.append(test)
+                    
+                    if self.forecaseWeather.count == 40 {
+                        self.currentWeatherDelegate?.sendForecast()
+                    }
+                }
+            }
+        }
+    }
+    
+    func makeWeatherData(location: CLLocation) {
+        makeCurrentWeather(location: location)
+        makeForecastWeather(location: location)
+    }
 
+}
 
 extension WeatherController: LocationDelegate {
     func send(location: CLLocation) {
-        makeCurrentWeather(location: location)
+        makeWeatherData(location: location)
     }
     
 }

@@ -14,8 +14,11 @@ struct FiveDaysForecastDTO: Decodable {
 
 struct Day: Decodable {
     
+    // time -> Date
     let time: String
+    // Temperature.temperature -> String
     let temperature: Temperature
+    // 배열 풀고 first.icon
     let weather: [Weather]
     
     enum CodingKeys: String, CodingKey {
