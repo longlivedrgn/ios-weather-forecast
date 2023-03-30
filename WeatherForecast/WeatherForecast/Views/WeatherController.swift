@@ -53,34 +53,43 @@ final class WeatherController {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-    private func makeCurrentWeather(location: CLLocation) {
+    // solid : "S"!!!!!
+    // 네이밍
+    private func makeCurrentAddress(location: CLLocation, completion: @escaping (String) -> Void) {
         
-        let coordinate = makeCoordinate(from: location)
-        
-        locationManager.changeGeocoder(location: location) { [weak self] place in
+        locationManager.changeGeocoder(location: location) { place in
             
             guard let locality = place?.locality, let subLocality = place?.subLocality else { return }
-            
             let address = "\(locality) \(subLocality)"
-            
-            self?.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { [weak self] data in
-                
-                guard let weatherData = data as? CurrentWeatherDTO else { return }
-                
-                guard let icon = weatherData.weather.first?.icon else { return }
-                
-                self?.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
-                    
-                    let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-                    
-                    self?.currentWeather = currentWeatherData
-                    self?.currentWeatherDelegate?.sendCurrent()
-                }
-            }
+            completion(address)
         }
     }
     
-    private func makeForecastWeather(location: CLLocation) {
+    private func makeCurrentInformation(location: CLLocation, address: String, completion: @escaping (String, CurrentWeatherDTO) -> Void) {
+        
+        let coordinate = makeCoordinate(from: location)
+        
+        self.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { data in
+            
+            guard let weatherData = data as? CurrentWeatherDTO else { return }
+            guard let icon = weatherData.weather.first?.icon else { return }
+            
+            completion(icon, weatherData)
+        }
+    }
+    
+    private func makeCurrentImage(icon: String, address: String, weatherData: CurrentWeatherDTO) {
+        
+        self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
+            
+            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
+            
+            self?.currentWeather = currentWeatherData
+            self?.currentWeatherDelegate?.sendCurrent()
+        }
+    }
+    
+    private func makeForecastWeather(location: CLLocation, completion: @escaping (String, Day) -> Void) {
         
         let coordinate = self.makeCoordinate(from: location)
         
@@ -91,23 +100,37 @@ final class WeatherController {
             for eachData in forecastData.list {
                 
                 guard let icon = eachData.weather.first?.icon else { return }
-                
-                self.weatherAPIManager?.fetchWeatherImage(icon: icon) { image in
-                    let test = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
-                    
-                    self.forecaseWeather.append(test)
-                    
-                    if self.forecaseWeather.count == 40 {
-                        self.currentWeatherDelegate?.sendForecast()
-                    }
-                }
+                completion(icon, eachData)
+            }
+        }
+    }
+    
+    private func makeForecastImage(icon: String, eachData: Day) {
+        
+        self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] image in
+            
+            let test = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
+            self?.forecaseWeather.append(test)
+            
+            if self?.forecaseWeather.count == 40 {
+                self?.currentWeatherDelegate?.sendForecast()
             }
         }
     }
     
     func makeWeatherData(location: CLLocation) {
-        makeCurrentWeather(location: location)
-        makeForecastWeather(location: location)
+        
+        makeCurrentAddress(location: location) { [weak self] address in
+            
+            self?.makeCurrentInformation(location: location, address: address) { [weak self] iconString, weatherData in
+                self?.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
+            }
+        }
+        
+        makeForecastWeather(location: location) { [weak self] iconString, eachData in
+            
+            self?.makeForecastImage(icon: iconString, eachData: eachData)
+        }
     }
 
 }
