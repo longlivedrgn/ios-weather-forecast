@@ -18,21 +18,26 @@ final class WeatherViewController: UIViewController {
         super.viewDidLoad()
         
         weatherController.currentWeatherDelegate = self
+        weatherController.fiveDaysForecastDelegate = self
     }
     
 }
 
 extension WeatherViewController: CurrentWeatherDelegate {
     
-    func send(current: WeatherController.CurrentWeather) {
-        print("viewController: \(current)")
+    func notifyToUpdateCurrentWeather() {
+        // apply snapshot!
+        print(weatherController.currentWeather)
     }
 }
 
 extension WeatherViewController: FiveDaysForecastDelegate {
     
-    func send(fiveDaysForecast: WeatherController.FiveDaysForecast) {
-        print("viewController: \(fiveDaysForecast)")
+    func notifyToUpdateFiveDaysForecast() {
+        guard let array = weatherController.fiveForecast else { return }
+        for i in array {
+            print(i)
+        }
     }
 }
 
