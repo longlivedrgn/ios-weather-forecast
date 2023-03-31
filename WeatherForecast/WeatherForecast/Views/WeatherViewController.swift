@@ -24,7 +24,7 @@ final class WeatherViewController: UIViewController {
     }
     
     // MARK: 2. datasource 선언
-    private var forecastDataSource: UICollectionViewDiffableDataSource<ForecastSection, CurrentViewModel.CurrentWeather.ID>!
+    private var forecastDataSource: UICollectionViewDiffableDataSource<ForecastSection, CurrentWeatherViewModel.CurrentWeather.ID>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +66,7 @@ extension WeatherViewController {
     // MARK: DiffableDataSource 설정
     private func configureDataSource() {
         
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, CurrentViewModel.CurrentWeather> { cell, indexPath, currentWeather in
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, CurrentWeatherViewModel.CurrentWeather> { cell, indexPath, currentWeather in
             
             var contentConfiguration = UIListContentConfiguration.subtitleCell()
             contentConfiguration.text = currentWeather.address
@@ -78,7 +78,7 @@ extension WeatherViewController {
         
         forecastDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier -> UICollectionViewCell in
             
-            guard let data = CurrentViewModel().currentWeather else {
+            guard let data = CurrentWeatherViewModel().currentWeather else {
                 print("here")
                 return UICollectionViewCell()
             }
@@ -89,10 +89,10 @@ extension WeatherViewController {
     }
     
     private func updateSnapshot() {
-        guard let currentWeather = CurrentViewModel().currentWeather?.id else { return }
+        guard let currentWeather = CurrentWeatherViewModel().currentWeather?.id else { return }
 //                as? WeatherController.CurrentWeather.ID else { return }
         
-        var snapshot = NSDiffableDataSourceSnapshot<ForecastSection, CurrentViewModel.CurrentWeather.ID>()
+        var snapshot = NSDiffableDataSourceSnapshot<ForecastSection, CurrentWeatherViewModel.CurrentWeather.ID>()
         snapshot.appendSections([.main])
         snapshot.appendItems([currentWeather], toSection: .main)
         forecastDataSource.apply(snapshot, animatingDifferences: true)
@@ -104,7 +104,7 @@ extension WeatherViewController: WeatherDelegate {
     
     func sendCurrent() {
         // header view update
-        print(CurrentViewModel().currentWeather)
+        print(CurrentWeatherViewModel().currentWeather)
         updateSnapshot()
     }
     

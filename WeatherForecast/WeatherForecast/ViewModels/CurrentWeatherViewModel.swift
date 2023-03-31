@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-final class CurrentViewModel {
+final class CurrentWeatherViewModel {
     
     struct CurrentWeather: Identifiable {
         let id = UUID()
@@ -18,21 +18,15 @@ final class CurrentViewModel {
         let temperatures: Temperature
     }
     
-    private let locationManager = LocationManager()
     private var weatherAPIManager: WeatherAPIManager?
-    private let weatherViewModel = WeatherViewModel()
     
     var currentWeather: CurrentWeather?
-    
     
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
         weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
     }
-
     
-    // solid : "S"!!!!!
-    // 네이밍
-    func makeCurrentAddress(location: CLLocation, completion: @escaping (String) -> Void) {
+    func makeCurrentAddress(locationManager: LocationManager, location: CLLocation, completion: @escaping (String) -> Void) {
         
         locationManager.changeGeocoder(location: location) { place in
             
@@ -42,10 +36,8 @@ final class CurrentViewModel {
         }
     }
     
-    func makeCurrentInformation(location: CLLocation, address: String, completion: @escaping (String, CurrentWeatherDTO) -> Void) {
-        
-        let coordinate = weatherViewModel.makeCoordinate(from: location)
-        
+    func makeCurrentInformation(coordinate: Coordinate, location: CLLocation, address: String, completion: @escaping (String, CurrentWeatherDTO) -> Void) {
+                
         self.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { data in
             
             guard let weatherData = data as? CurrentWeatherDTO else { return }
@@ -60,9 +52,7 @@ final class CurrentViewModel {
         self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
             
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            
-            self?.currentWeather = currentWeatherData
-//            self?.weatherDelegate?.sendCurrent()
+            print(currentWeatherData)
         }
     }
 }

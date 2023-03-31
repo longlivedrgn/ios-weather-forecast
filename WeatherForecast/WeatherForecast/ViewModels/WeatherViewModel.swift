@@ -14,24 +14,16 @@ import CoreLocation
 
 final class WeatherViewModel {
     
-    struct FiveDaysForecast: Identifiable {
-        let id = UUID()
-        
-        var image: UIImage?
-        let date: String
-        let temperature: Double
-    }
-    
-    private var weatherAPIManager: WeatherAPIManager?
-    private let locationManager = LocationManager()
+    private var forecastWeatherViewModel = ForecastWeatherViewModel()
+    lazy var currentWeatherViewModel = CurrentWeatherViewModel()
     
     weak var weatherDelegate: WeatherDelegate?
+    lazy var locationManager = LocationManager()
     
-    var forecaseWeather: [FiveDaysForecast] = []
+    var forecaseWeather: [ForecastWeatherViewModel.FiveDaysForecast] = []
+    var currentWeather: CurrentWeatherViewModel.CurrentWeather?
         
-    init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
-        weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
-        
+    init() {
         locationManager.locationDelegate = self
     }
     
@@ -44,56 +36,28 @@ final class WeatherViewModel {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-    private func makeForecastWeather(location: CLLocation, completion: @escaping (String, Day) -> Void) {
+
+    
+    func makeWeatherData(locationManager: LocationManager, location: CLLocation) {
         
         let coordinate = self.makeCoordinate(from: location)
-        
-        self.weatherAPIManager?.fetchWeatherInformation(of: .fiveDaysForecast, in: coordinate) { data in
-            
-            guard let forecastData = data as? FiveDaysForecastDTO else { return }
-            
-            for eachData in forecastData.list {
-                
-                guard let icon = eachData.weather.first?.icon else { return }
-                completion(icon, eachData)
-            }
-        }
-    }
-    
-    private func makeForecastImage(icon: String, eachData: Day) {
-        
-        self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] image in
-            
-            let test = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
-            self?.forecaseWeather.append(test)
-            
-            if self?.forecaseWeather.count == 40 {
-                self?.weatherDelegate?.sendForecast()
-            }
-        }
-    }
-    
-    func makeWeatherData(location: CLLocation) {
-        let currentViewModel = CurrentViewModel()
-        
-        currentViewModel.makeCurrentAddress(location: location) { [weak self] address in
-            
-            currentViewModel.makeCurrentInformation(location: location, address: address) { [weak self] iconString, weatherData in
-                currentViewModel.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
-            }
-        }
-        
-        makeForecastWeather(location: location) { [weak self] iconString, eachData in
-            
-            self?.makeForecastImage(icon: iconString, eachData: eachData)
-        }
-    }
 
+        currentWeatherViewModel.makeCurrentAddress(locationManager: locationManager, location: location) { [weak self] address in
+
+            self?.currentWeatherViewModel.makeCurrentInformation(coordinate: coordinate, location: location, address: address) { [weak self] iconString, weatherData in
+                self?.currentWeatherViewModel.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
+            }
+        }
+        
+        forecastWeatherViewModel.makeForecastWeather(coordinate: coordinate, location: location) { [weak self] iconString, eachData in
+            
+            self?.forecastWeatherViewModel.makeForecastImage(icon: iconString, eachData: eachData)
+        }
+    }
 }
 
 extension WeatherViewModel: LocationDelegate {
     func send(location: CLLocation) {
-        makeWeatherData(location: location)
+        makeWeatherData(locationManager: locationManager, location: location)
     }
-    
 }
