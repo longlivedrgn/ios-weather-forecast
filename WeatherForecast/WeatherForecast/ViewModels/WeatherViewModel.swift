@@ -14,16 +14,20 @@ import CoreLocation
 
 final class WeatherViewModel {
     
-    private var forecastWeatherViewModel = ForecastWeatherViewModel()
-    lazy var currentWeatherViewModel = CurrentWeatherViewModel()
+    private let forecastWeatherViewModel = ForecastWeatherViewModel()
+    private let currentWeatherViewModel = CurrentWeatherViewModel()
+
+    private let locationManager = LocationManager()
+    private let weatherAPIManager: WeatherAPIManager?
     
     weak var weatherDelegate: WeatherDelegate?
-    lazy var locationManager = LocationManager()
     
     var forecaseWeather: [ForecastWeatherViewModel.FiveDaysForecast] = []
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
         
-    init() {
+    init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
+        weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
+        
         locationManager.locationDelegate = self
     }
     
@@ -36,28 +40,52 @@ final class WeatherViewModel {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-
-    
-    func makeWeatherData(locationManager: LocationManager, location: CLLocation) {
+    func makeWeatherData(locationManager: LocationManager, weatherAPIManager: WeatherAPIManager?) {
         
+        guard let location = locationManager.locationManager?.location else { return }
         let coordinate = self.makeCoordinate(from: location)
 
-        currentWeatherViewModel.makeCurrentAddress(locationManager: locationManager, location: location) { [weak self] address in
+        currentWeatherViewModel.makeCurrentAddress(
+            locationManager: locationManager,
+            location: location
+        ) { [weak self] address in
 
-            self?.currentWeatherViewModel.makeCurrentInformation(coordinate: coordinate, location: location, address: address) { [weak self] iconString, weatherData in
-                self?.currentWeatherViewModel.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
+            self?.currentWeatherViewModel.makeCurrentInformation(
+                weatherAPIManager: weatherAPIManager,
+                coordinate: coordinate,
+                location: location,
+                address: address
+            ) { [weak self] iconString, weatherData in
+                
+                self?.currentWeatherViewModel.makeCurrentImage(
+                    weatherAPIManager: weatherAPIManager,
+                    icon: iconString,
+                    address: address,
+                    weatherData: weatherData
+                )
             }
         }
         
-        forecastWeatherViewModel.makeForecastWeather(coordinate: coordinate, location: location) { [weak self] iconString, eachData in
+        forecastWeatherViewModel.makeForecastWeather(
+            weatherAPIManager: weatherAPIManager,
+            coordinate: coordinate,
+            location: location
+        ) { [weak self] iconString, eachData in
             
-            self?.forecastWeatherViewModel.makeForecastImage(icon: iconString, eachData: eachData)
+            self?.forecastWeatherViewModel.makeForecastImage(
+                weatherAPIManager: weatherAPIManager,
+                icon: iconString,
+                eachData: eachData
+            )
         }
     }
 }
 
 extension WeatherViewModel: LocationDelegate {
-    func send(location: CLLocation) {
-        makeWeatherData(locationManager: locationManager, location: location)
+    func didUpdateLocation() {
+        makeWeatherData(
+            locationManager: locationManager,
+            weatherAPIManager: weatherAPIManager
+        )
     }
 }

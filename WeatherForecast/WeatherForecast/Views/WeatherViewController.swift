@@ -9,7 +9,7 @@ import CoreLocation
 
 final class WeatherViewController: UIViewController {
     
-    private var weatherController = WeatherViewModel()
+    private var weatherViewModel = WeatherViewModel()
     
     // collectionView는 초기화 시, layout 설정을 해주지 않으면 초기화 불가능.
     private var collectionView: UICollectionView = {
@@ -29,7 +29,7 @@ final class WeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        weatherController.weatherDelegate = self
+        weatherViewModel.weatherDelegate = self
         
         configureCollectionView()
         configureDataSource()
@@ -78,7 +78,7 @@ extension WeatherViewController {
         
         forecastDataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier -> UICollectionViewCell in
             
-            guard let data = CurrentWeatherViewModel().currentWeather else {
+            guard let data = self.weatherViewModel.currentWeather else {
                 print("here")
                 return UICollectionViewCell()
             }
@@ -89,7 +89,7 @@ extension WeatherViewController {
     }
     
     private func updateSnapshot() {
-        guard let currentWeather = CurrentWeatherViewModel().currentWeather?.id else { return }
+        guard let currentWeather = weatherViewModel.currentWeather?.id else { return }
 //                as? WeatherController.CurrentWeather.ID else { return }
         
         var snapshot = NSDiffableDataSourceSnapshot<ForecastSection, CurrentWeatherViewModel.CurrentWeather.ID>()
@@ -104,12 +104,12 @@ extension WeatherViewController: WeatherDelegate {
     
     func sendCurrent() {
         // header view update
-        print(CurrentWeatherViewModel().currentWeather)
+        print(weatherViewModel.currentWeather)
         updateSnapshot()
     }
     
     func sendForecast() {
-        print(weatherController.forecaseWeather)
+        print(weatherViewModel.forecaseWeather)
     }
     
 }

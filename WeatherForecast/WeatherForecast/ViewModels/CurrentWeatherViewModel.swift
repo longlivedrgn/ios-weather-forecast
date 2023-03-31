@@ -18,16 +18,10 @@ final class CurrentWeatherViewModel {
         let temperatures: Temperature
     }
     
-    private var weatherAPIManager: WeatherAPIManager?
-    
-    var currentWeather: CurrentWeather?
-    
-    init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
-        weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
-    }
-    
-    func makeCurrentAddress(locationManager: LocationManager, location: CLLocation, completion: @escaping (String) -> Void) {
-        
+    func makeCurrentAddress(locationManager: LocationManager,
+                            location: CLLocation,
+                            completion: @escaping (String) -> Void
+    ) {
         locationManager.changeGeocoder(location: location) { place in
             
             guard let locality = place?.locality, let subLocality = place?.subLocality else { return }
@@ -36,9 +30,13 @@ final class CurrentWeatherViewModel {
         }
     }
     
-    func makeCurrentInformation(coordinate: Coordinate, location: CLLocation, address: String, completion: @escaping (String, CurrentWeatherDTO) -> Void) {
-                
-        self.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { data in
+    func makeCurrentInformation(weatherAPIManager: WeatherAPIManager?,
+                                coordinate: Coordinate,
+                                location: CLLocation,
+                                address: String,
+                                completion: @escaping (String, CurrentWeatherDTO) -> Void
+    ) {
+        weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { data in
             
             guard let weatherData = data as? CurrentWeatherDTO else { return }
             guard let icon = weatherData.weather.first?.icon else { return }
@@ -47,12 +45,16 @@ final class CurrentWeatherViewModel {
         }
     }
     
-    func makeCurrentImage(icon: String, address: String, weatherData: CurrentWeatherDTO) {
-        
-        self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
+    func makeCurrentImage(weatherAPIManager: WeatherAPIManager?,
+                          icon: String,
+                          address: String,
+                          weatherData: CurrentWeatherDTO
+    ) {
+        weatherAPIManager?.fetchWeatherImage(icon: icon) { weatherImage in
             
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            print(currentWeatherData)
+            
+            print("이건 currentViewModel : \(currentWeatherData)")
         }
     }
 }

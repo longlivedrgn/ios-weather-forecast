@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 
 protocol LocationDelegate: AnyObject {
-    func send(location: CLLocation)
+    func didUpdateLocation()
 }
 
 protocol WeatherDelegate: AnyObject {

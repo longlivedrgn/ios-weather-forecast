@@ -11,7 +11,7 @@ import CoreLocation
 class LocationManager: NSObject {
     
     weak var locationDelegate: LocationDelegate?
-    private var locationManager: CLLocationManager?
+    var locationManager: CLLocationManager?
     
     override init() {
         super.init()
@@ -43,13 +43,7 @@ extension LocationManager: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        if locations.last != manager.location {
-            guard let recentLocation = locations.last else {
-                print("LocationManager: recentLocation에 들어온 주소 없음.")
-                return
-            }
-            locationDelegate?.send(location: recentLocation)
-        }
+        locationDelegate?.didUpdateLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
