@@ -14,14 +14,6 @@ import CoreLocation
 
 final class WeatherViewModel {
     
-    struct CurrentWeather: Identifiable {
-        let id = UUID()
-        
-        let image: UIImage?
-        let address: String
-        let temperatures: Temperature
-    }
-    
     struct FiveDaysForecast: Identifiable {
         let id = UUID()
         
@@ -35,7 +27,6 @@ final class WeatherViewModel {
     
     weak var weatherDelegate: WeatherDelegate?
     
-    var currentWeather: CurrentWeather?
     var forecaseWeather: [FiveDaysForecast] = []
         
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
@@ -51,42 +42,6 @@ final class WeatherViewModel {
         let longitude = location.coordinate.longitude
         
         return Coordinate(longitude: longitude, latitude: latitude)
-    }
-    
-    // solid : "S"!!!!!
-    // 네이밍
-    private func makeCurrentAddress(location: CLLocation, completion: @escaping (String) -> Void) {
-        
-        locationManager.changeGeocoder(location: location) { place in
-            
-            guard let locality = place?.locality, let subLocality = place?.subLocality else { return }
-            let address = "\(locality) \(subLocality)"
-            completion(address)
-        }
-    }
-    
-    private func makeCurrentInformation(location: CLLocation, address: String, completion: @escaping (String, CurrentWeatherDTO) -> Void) {
-        
-        let coordinate = makeCoordinate(from: location)
-        
-        self.weatherAPIManager?.fetchWeatherInformation(of: .currentWeather, in: coordinate) { data in
-            
-            guard let weatherData = data as? CurrentWeatherDTO else { return }
-            guard let icon = weatherData.weather.first?.icon else { return }
-            
-            completion(icon, weatherData)
-        }
-    }
-    
-    private func makeCurrentImage(icon: String, address: String, weatherData: CurrentWeatherDTO) {
-        
-        self.weatherAPIManager?.fetchWeatherImage(icon: icon) { [weak self] weatherImage in
-            
-            let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            
-            self?.currentWeather = currentWeatherData
-            self?.weatherDelegate?.sendCurrent()
-        }
     }
     
     private func makeForecastWeather(location: CLLocation, completion: @escaping (String, Day) -> Void) {
@@ -119,11 +74,12 @@ final class WeatherViewModel {
     }
     
     func makeWeatherData(location: CLLocation) {
+        let currentViewModel = CurrentViewModel()
         
-        makeCurrentAddress(location: location) { [weak self] address in
+        currentViewModel.makeCurrentAddress(location: location) { [weak self] address in
             
-            self?.makeCurrentInformation(location: location, address: address) { [weak self] iconString, weatherData in
-                self?.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
+            currentViewModel.makeCurrentInformation(location: location, address: address) { [weak self] iconString, weatherData in
+                currentViewModel.makeCurrentImage(icon: iconString, address: address, weatherData: weatherData)
             }
         }
         
