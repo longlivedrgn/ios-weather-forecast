@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-final class FiveForecastDayWeatherViewModel {
+final class FiveDaysForecastWeatherViewModel {
     
     struct FiveDaysForecast: Identifiable {
         let id = UUID()

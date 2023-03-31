@@ -14,13 +14,13 @@ import CoreLocation
 
 final class WeatherViewModel {
     
-    private let fiveforecastDayWeatherViewModel = FiveForecastDayWeatherViewModel()
+    private let fiveDaysForecastWeatherViewModel = FiveDaysForecastWeatherViewModel()
     private let currentWeatherViewModel = CurrentWeatherViewModel()
 
     private let locationManager = CoreLocationManager()
     private let weatherAPIManager: WeatherAPIManager?
         
-    var fiveforecastDayWeather: [FiveForecastDayWeatherViewModel.FiveDaysForecast] = []
+    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = []
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
         
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
@@ -64,13 +64,13 @@ final class WeatherViewModel {
             }
         }
         
-        fiveforecastDayWeatherViewModel.makeForecastWeather(
+        self.fiveDaysForecastWeatherViewModel.makeForecastWeather(
             weatherAPIManager: weatherAPIManager,
             coordinate: coordinate,
             location: location
         ) { [weak self] iconString, eachData in
             
-            self?.fiveforecastDayWeatherViewModel.makeForecastImage(
+            self?.fiveDaysForecastWeatherViewModel.makeForecastImage(
                 weatherAPIManager: weatherAPIManager,
                 icon: iconString,
                 eachData: eachData

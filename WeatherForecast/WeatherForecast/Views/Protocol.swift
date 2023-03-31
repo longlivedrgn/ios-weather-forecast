@@ -11,3 +11,12 @@ import CoreLocation
 protocol LocationDelegate: AnyObject {
     func didUpdateLocation()
 }
+
+protocol CurrentWeatherViewModelDelegate: AnyObject {
+    func send(_ currentWeather: CurrentWeatherViewModel.CurrentWeather)
+}
+
+protocol FiveForecastDayWeatherViewModelDelegate: AnyObject {
+    func send(_ fiveDaysForecastWeather: FiveDaysForecastWeatherViewModel.FiveDaysForecast)
+}
+ 
