@@ -28,9 +28,7 @@ final class WeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        weatherViewModel.weatherDelegate = self
-        
+                
         configureCollectionView()
         configureDataSource()
         configureLayout()
@@ -100,17 +98,17 @@ extension WeatherViewController {
     
 }
 
-extension WeatherViewController: WeatherDelegate {
-    
-    func sendCurrent() {
-        // header view update
-        print(weatherViewModel.currentWeather)
-        updateSnapshot()
-    }
-    
-    func sendForecast() {
-        print(weatherViewModel.forecaseWeather)
-    }
-    
-}
+//extension WeatherViewController: WeatherDelegate {
+//
+//    func sendCurrent() {
+//        // header view update
+//        print(weatherViewModel.currentWeather)
+//        updateSnapshot()
+//    }
+//
+//    func sendForecast() {
+//        print(weatherViewModel.forecaseWeather)
+//    }
+//
+//}
 

@@ -11,8 +11,3 @@ import CoreLocation
 protocol LocationDelegate: AnyObject {
     func didUpdateLocation()
 }
-
-protocol WeatherDelegate: AnyObject {
-    func sendCurrent()
-    func sendForecast()
-}

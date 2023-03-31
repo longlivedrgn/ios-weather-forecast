@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-class LocationManager: NSObject {
+class CoreLocationManager: NSObject {
     
     weak var locationDelegate: LocationDelegate?
     var locationManager: CLLocationManager?
@@ -39,7 +39,7 @@ class LocationManager: NSObject {
     }
 }
 
-extension LocationManager: CLLocationManagerDelegate {
+extension CoreLocationManager: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -54,11 +54,10 @@ extension LocationManager: CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse:
 //            manager.startUpdatingLocation()
-            print("asdf")
             manager.requestLocation()
             // 여기서 viewcontroller에다가 delegate를 준 다음, 이 신호를 받은 viewcontroller는 weatherController의 함수 실행
         case .denied, .restricted:
-            print("ggod")
+            break
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
         default:

@@ -14,15 +14,13 @@ import CoreLocation
 
 final class WeatherViewModel {
     
-    private let forecastWeatherViewModel = ForecastWeatherViewModel()
+    private let fiveforecastDayWeatherViewModel = FiveForecastDayWeatherViewModel()
     private let currentWeatherViewModel = CurrentWeatherViewModel()
 
-    private let locationManager = LocationManager()
+    private let locationManager = CoreLocationManager()
     private let weatherAPIManager: WeatherAPIManager?
-    
-    weak var weatherDelegate: WeatherDelegate?
-    
-    var forecaseWeather: [ForecastWeatherViewModel.FiveDaysForecast] = []
+        
+    var fiveforecastDayWeather: [FiveForecastDayWeatherViewModel.FiveDaysForecast] = []
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
         
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
@@ -40,7 +38,7 @@ final class WeatherViewModel {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-    func makeWeatherData(locationManager: LocationManager, weatherAPIManager: WeatherAPIManager?) {
+    func makeWeatherData(locationManager: CoreLocationManager, weatherAPIManager: WeatherAPIManager?) {
         
         guard let location = locationManager.locationManager?.location else { return }
         let coordinate = self.makeCoordinate(from: location)
@@ -59,20 +57,20 @@ final class WeatherViewModel {
                 
                 self?.currentWeatherViewModel.makeCurrentImage(
                     weatherAPIManager: weatherAPIManager,
-                    icon: iconString,
+                    iconString: iconString,
                     address: address,
                     weatherData: weatherData
                 )
             }
         }
         
-        forecastWeatherViewModel.makeForecastWeather(
+        fiveforecastDayWeatherViewModel.makeForecastWeather(
             weatherAPIManager: weatherAPIManager,
             coordinate: coordinate,
             location: location
         ) { [weak self] iconString, eachData in
             
-            self?.forecastWeatherViewModel.makeForecastImage(
+            self?.fiveforecastDayWeatherViewModel.makeForecastImage(
                 weatherAPIManager: weatherAPIManager,
                 icon: iconString,
                 eachData: eachData

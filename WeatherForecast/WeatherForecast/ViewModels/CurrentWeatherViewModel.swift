@@ -12,13 +12,12 @@ final class CurrentWeatherViewModel {
     
     struct CurrentWeather: Identifiable {
         let id = UUID()
-        
         let image: UIImage?
         let address: String
         let temperatures: Temperature
     }
     
-    func makeCurrentAddress(locationManager: LocationManager,
+    func makeCurrentAddress(locationManager: CoreLocationManager,
                             location: CLLocation,
                             completion: @escaping (String) -> Void
     ) {
@@ -46,15 +45,13 @@ final class CurrentWeatherViewModel {
     }
     
     func makeCurrentImage(weatherAPIManager: WeatherAPIManager?,
-                          icon: String,
+                          iconString: String,
                           address: String,
                           weatherData: CurrentWeatherDTO
     ) {
-        weatherAPIManager?.fetchWeatherImage(icon: icon) { weatherImage in
+        weatherAPIManager?.fetchWeatherImage(icon: iconString) { weatherImage in
             
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
-            
-            print("이건 currentViewModel : \(currentWeatherData)")
         }
     }
 }
