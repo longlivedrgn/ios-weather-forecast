@@ -64,7 +64,7 @@ extension WeatherViewController {
     
     private func makeDataSource() -> UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast> {
         let cellRegistration = UICollectionView.CellRegistration<CurrentWeatherCollectionViewCell, WeatherController.FiveDaysForecast> { (cell, indexPath, fiveDaysForecast) in
-            cell.temperatureLabel.text = "\(fiveDaysForecast.temperature)"
+            cell.temperatureLabel.text = "\(fiveDaysForecast.temperature)°"
             cell.weatherIconImage.image = fiveDaysForecast.image
             cell.dateLabel.text = "\(fiveDaysForecast.date)"
         }
@@ -77,8 +77,8 @@ extension WeatherViewController {
             let minimumTemperature = self.weatherController.currentWeather?.temperatures?.minimumTemperature ?? 0
             let currentTemperature = self.weatherController.currentWeather?.temperatures?.currentTemperature ?? 0
             
-            headerView.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
-            headerView.CurrentTemperatureLabel.text = "\(currentTemperature)"
+            headerView.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature)° 최고 \(maximumTemperature)°"
+            headerView.CurrentTemperatureLabel.text = "\(currentTemperature)°"
         }
         
         dataSource = UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast>(collectionView: weatherCollectionView) {
