@@ -28,7 +28,7 @@ class CurrentWeatherHeaderView: UICollectionReusableView {
     
     var CurrentTemperatureLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 40)
+        label.font = .systemFont(ofSize: 30)
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -59,7 +59,7 @@ class CurrentWeatherHeaderView: UICollectionReusableView {
         
         weatherIconImage.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         weatherIconImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
-        weatherIconImage.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        weatherIconImage.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         addressLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
         addressLabel.leftAnchor.constraint(equalTo: weatherIconImage.rightAnchor, constant: 5).isActive = true

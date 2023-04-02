@@ -49,7 +49,8 @@ class CurrentWeatherCollectionViewCell: UICollectionViewCell {
         self.contentView.addSubview(temperatureLabel)
         
         weatherIconImage.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10).isActive = true
-        weatherIconImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20).isActive = true
+//        weatherIconImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20).isActive = true
+        weatherIconImage.centerYAnchor.constraint(equalTo: temperatureLabel.centerYAnchor).isActive = true
         weatherIconImage.heightAnchor.constraint(equalToConstant: 36).isActive = true
         weatherIconImage.widthAnchor.constraint(equalToConstant: 40).isActive = true
         

@@ -21,7 +21,7 @@ final class WeatherController {
         let temperatures: Temperature?
     }
     
-    struct FiveDaysForecast: Identifiable {
+    struct FiveDaysForecast: Hashable {
         let id = UUID()
         let image: UIImage
         let date: String
@@ -106,8 +106,6 @@ final class WeatherController {
                 })
             }
             group.notify(queue: .main) {
-//                self.
-//                print(self.fiveForecast)
                 self.fiveDaysForecastDelegate?.notifyToUpdateFiveDaysForecast()
             }
         })
