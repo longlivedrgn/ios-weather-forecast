@@ -47,11 +47,15 @@ final class CurrentWeatherViewModel {
     func makeCurrentImage(weatherAPIManager: WeatherAPIManager?,
                           iconString: String,
                           address: String,
-                          weatherData: CurrentWeatherDTO
+                          weatherData: CurrentWeatherDTO,
+                          completion: @escaping (CurrentWeather) -> Void
     ) {
         weatherAPIManager?.fetchWeatherImage(icon: iconString) { weatherImage in
             
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
+            completion(currentWeatherData)
+            
+            print("currentWeatherViewModel: \(currentWeatherData)")
         }
     }
 }

@@ -16,8 +16,18 @@ final class WeatherViewModel {
     private let locationManager = CoreLocationManager()
     private let weatherAPIManager: WeatherAPIManager?
     
-    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = []
-    var currentWeather: CurrentWeatherViewModel.CurrentWeather?
+    weak var weatherDataDelegate: WeatherDataDelegate?
+    
+    var currentWeather: CurrentWeatherViewModel.CurrentWeather? {
+        didSet {
+            weatherDataDelegate?.sendCurrentWeather()
+        }
+    }
+    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = [] {
+        didSet {
+            weatherDataDelegate?.sendForecast()
+        }
+    }
     
     init(networkModel: NetworkModel = NetworkModel(session: URLSession.shared)) {
         weatherAPIManager = WeatherAPIManager(networkModel: networkModel)
@@ -55,7 +65,9 @@ final class WeatherViewModel {
                     iconString: iconString,
                     address: address,
                     weatherData: weatherData
-                )
+                ) { currentData in
+                    self?.currentWeather = currentData
+                }
             }
         }
         
