@@ -40,23 +40,28 @@ extension WeatherViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .absolute(44))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .absolute(48))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
-        let section = NSCollectionLayoutSection(group: group)
+        // 처음 빌드될 때 아직 채워지지 않아서 0이 나온다..
+        let numberOfItems = CGFloat(weatherController.fiveForecast.count)
         
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                      heightDimension: .absolute(100))
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: headerSize,
             elementKind: "Header", alignment: .top)
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .absolute(44))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0)
+        
+        let totalItemSize = item.contentInsets.top + item.contentInsets.bottom + item.layoutSize.heightDimension.dimension
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .estimated(totalItemSize * numberOfItems))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
         section.boundarySupplementaryItems = [sectionHeader]
+        
         let layout = UICollectionViewCompositionalLayout(section: section)
         
         return layout
@@ -66,7 +71,8 @@ extension WeatherViewController {
         let cellRegistration = UICollectionView.CellRegistration<CurrentWeatherCollectionViewCell, WeatherController.FiveDaysForecast> { (cell, indexPath, fiveDaysForecast) in
             cell.temperatureLabel.text = "\(fiveDaysForecast.temperature)°"
             cell.weatherIconImage.image = fiveDaysForecast.image
-            cell.dateLabel.text = "\(fiveDaysForecast.date)"
+            let date = self.changeDateFormat(of: fiveDaysForecast.date)
+            cell.dateLabel.text = "\(date)"
         }
         
         let headerRegistration = UICollectionView.SupplementaryRegistration<CurrentWeatherHeaderView>(elementKind: "Header") { headerView, elementKind, indexPath in
@@ -105,6 +111,20 @@ extension WeatherViewController {
         weatherController.currentWeatherDelegate = self
         weatherController.fiveDaysForecastDelegate = self
     }
+    
+    private func changeDateFormat(of input: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let date = dateFormatter.date(from: input)!
+        
+        let changedDateFormatter = DateFormatter()
+        changedDateFormatter.dateFormat = "MM/dd(EEEEE) HH시"
+        changedDateFormatter.locale = Locale(identifier: "ko_KR")
+        
+        let changedDate = changedDateFormatter.string(from: date)
+        
+        return changedDate
+    }
 }
 
 extension WeatherViewController: CurrentWeatherDelegate {
@@ -122,54 +142,3 @@ extension WeatherViewController: FiveDaysForecastDelegate {
         applySnapShot()
     }
 }
-//
-//extension WeatherViewController: UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: view.bounds.width, height: 120)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        return CGSize(width: 100, height: 100)
-//    }
-//
-//}
-//
-//extension WeatherViewController: UICollectionViewDataSource {
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = weatherCollectionView.dequeueReusableCell(withReuseIdentifier: "CurrentWeatherCell", for: indexPath) as! CurrentWeatherCollectionViewCell
-//        let array = weatherController.fiveForecast
-//        cell.temperatureLabel.text = "\(array[indexPath.row].temperature)"
-//        cell.dateLabel.text = array[indexPath.row].date
-//        cell.weatherIconImage.image = array[indexPath.row].image
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return weatherController.fiveForecast.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//        switch kind {
-//        case UICollectionView.elementKindSectionHeader:
-//            print("Asdf")
-//            let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath)
-//            guard let headerView = headerView as? CurrentWeatherHeaderView else { return UICollectionReusableView() }
-//            headerView.weatherIconImage.image = weatherController.currentWeather?.image
-//            headerView.addressLabel.text = weatherController.currentWeather?.address
-//
-//            let maximumTemperature = weatherController.currentWeather?.temperatures?.maximumTemperature ?? 0
-//            let minimumTemperature = weatherController.currentWeather?.temperatures?.minimumTemperature ?? 0
-//            let currentTemperature = weatherController.currentWeather?.temperatures?.currentTemperature ?? 0
-//
-//            headerView.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
-//
-//            headerView.CurrentTemperatureLabel.text = "\(currentTemperature)"
-//            return headerView
-//        default:
-//            print("Asdf")
-//            return UICollectionReusableView()
-//        }
-//    }
-//}
-
