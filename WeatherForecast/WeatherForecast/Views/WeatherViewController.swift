@@ -30,7 +30,9 @@ final class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     private func configureHierarchy() {
-        weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        let layoutConfiguration = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
+        let listConfiguartion = UICollectionViewCompositionalLayout.list(using: layoutConfiguration)
+        weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: listConfiguartion)
         weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherCollectionView)
         weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
@@ -112,6 +114,7 @@ extension WeatherViewController {
         weatherController.fiveDaysForecastDelegate = self
     }
     
+    // 요거 아마도 manager에서 해버리는 게 좋을듯!
     private func changeDateFormat(of input: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -139,6 +142,6 @@ extension WeatherViewController: FiveDaysForecastDelegate {
 
     func notifyToUpdateFiveDaysForecast() {
         print("notifyToUpdateCurrentWeather")
-        applySnapShot()
+//        applySnapShot()
     }
 }
