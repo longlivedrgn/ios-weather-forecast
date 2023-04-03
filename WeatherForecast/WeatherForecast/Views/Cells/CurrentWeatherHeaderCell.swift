@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CurrentWeatherHeaderView: UICollectionReusableView {
+class CurrentWeatherHeaderCell: UICollectionViewCell {
     
     var weatherIconImage: UIImageView = {
         let imageView = UIImageView()
@@ -52,10 +52,10 @@ class CurrentWeatherHeaderView: UICollectionReusableView {
     }
     
     func setUp() {
-        addSubview(weatherIconImage)
-        addSubview(addressLabel)
-        addSubview(CurrentTemperatureLabel)
-        addSubview(minimumMaximumTemperatureLabel)
+        self.contentView.addSubview(weatherIconImage)
+        self.contentView.addSubview(addressLabel)
+        self.contentView.addSubview(CurrentTemperatureLabel)
+        self.contentView.addSubview(minimumMaximumTemperatureLabel)
         
         weatherIconImage.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         weatherIconImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true

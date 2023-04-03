@@ -14,7 +14,15 @@ import CoreLocation
 
 final class WeatherController {
     
-    struct CurrentWeather: Identifiable {
+    struct CurrentWeather: Hashable {
+        static func == (lhs: WeatherController.CurrentWeather, rhs: WeatherController.CurrentWeather) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+        
         let id = UUID()
         let image: UIImage?
         let address: String?

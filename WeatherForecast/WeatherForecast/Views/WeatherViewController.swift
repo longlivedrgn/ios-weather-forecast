@@ -18,7 +18,8 @@ final class WeatherViewController: UIViewController {
     
     private var weatherController = WeatherController()
     private var weatherCollectionView: UICollectionView!
-    private lazy var dataSource = makeDataSource()
+    private lazy var forecastWeatherDataSource = makeForecastWeatherDatasource()
+    private lazy var currentWeatherDataSource = makeCurrentWeatherDataSource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,9 +46,9 @@ extension WeatherViewController {
         
         let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                      heightDimension: .absolute(100))
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: headerSize,
-            elementKind: "Header", alignment: .top)
+        let headerItem = NSCollectionLayoutItem(layoutSize: headerSize)
+        headerItem.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0)
+        let totalHeaderItemSize = headerItem.contentInsets.top + headerItem.contentInsets.bottom + headerItem.layoutSize.heightDimension.dimension
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                               heightDimension: .absolute(44))
@@ -56,18 +57,17 @@ extension WeatherViewController {
         
         let totalItemSize = item.contentInsets.top + item.contentInsets.bottom + item.layoutSize.heightDimension.dimension
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .estimated(totalItemSize * numberOfItems))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+                                              heightDimension: .estimated(totalItemSize * numberOfItems + totalHeaderItemSize))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [headerItem, item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.boundarySupplementaryItems = [sectionHeader]
         
         let layout = UICollectionViewCompositionalLayout(section: section)
         
         return layout
     }
     
-    private func makeDataSource() -> UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast> {
+    private func makeForecastWeatherDatasource() -> UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast> {
         let cellRegistration = UICollectionView.CellRegistration<CurrentWeatherCollectionViewCell, WeatherController.FiveDaysForecast> { (cell, indexPath, fiveDaysForecast) in
             cell.temperatureLabel.text = "\(fiveDaysForecast.temperature)°"
             cell.weatherIconImage.image = fiveDaysForecast.image
@@ -75,46 +75,46 @@ extension WeatherViewController {
             cell.dateLabel.text = "\(date)"
         }
         
-        let headerRegistration = UICollectionView.SupplementaryRegistration<CurrentWeatherHeaderView>(elementKind: "Header") { headerView, elementKind, indexPath in
-            headerView.weatherIconImage.image = self.weatherController.currentWeather?.image
-            headerView.addressLabel.text = self.weatherController.currentWeather?.address
+        forecastWeatherDataSource = UICollectionViewDiffableDataSource(collectionView: weatherCollectionView){ collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        }
+        
+        return forecastWeatherDataSource
+    }
+    
+    private func makeCurrentWeatherDataSource() -> UICollectionViewDiffableDataSource<Section, WeatherController.CurrentWeather> {
+        let headerRegistration = UICollectionView.CellRegistration<CurrentWeatherHeaderCell, WeatherController.CurrentWeather> {cell, indexPath, currentWeather in
+            cell.weatherIconImage.image = self.weatherController.currentWeather?.image
+            cell.addressLabel.text = self.weatherController.currentWeather?.address
             
             let maximumTemperature = self.weatherController.currentWeather?.temperatures?.maximumTemperature ?? 0
             let minimumTemperature = self.weatherController.currentWeather?.temperatures?.minimumTemperature ?? 0
             let currentTemperature = self.weatherController.currentWeather?.temperatures?.currentTemperature ?? 0
             
-            headerView.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature)° 최고 \(maximumTemperature)°"
-            headerView.CurrentTemperatureLabel.text = "\(currentTemperature)°"
+            cell.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature)° 최고 \(maximumTemperature)°"
+            cell.CurrentTemperatureLabel.text = "\(currentTemperature)°"
         }
         
-        dataSource = UICollectionViewDiffableDataSource(collectionView: weatherCollectionView){ collectionView, indexPath, itemIdentifier in
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        currentWeatherDataSource = UICollectionViewDiffableDataSource(collectionView: weatherCollectionView){ collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: headerRegistration, for: indexPath, item: itemIdentifier)
         }
         
-//        dataSource = UICollectionViewDiffableDataSource(collectionView: weatherCollectionView) {
-//            (collectionView: UICollectionView, indexPath: IndexPath, identifier: WeatherController.FiveDaysForecast) -> UICollectionViewCell? in
-//            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: identifier)
-//        }
-        
-
-        
-//        dataSource = UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast>(collectionView: weatherCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-//            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
-//        })
-        
-        dataSource.supplementaryViewProvider = { (weatherCollectionView, kind, index) in
-            return weatherCollectionView.dequeueConfiguredReusableSupplementary(
-                using: headerRegistration, for: index)
-        }
-        
-        return dataSource
+        return currentWeatherDataSource
     }
     
-    private func applySnapShot(animatingDifferences: Bool = true) {
-        var snapShot =  NSDiffableDataSourceSnapshot<Section, WeatherController.FiveDaysForecast>()
-        snapShot.appendSections([.main])
-        snapShot.appendItems(weatherController.fiveForecast)
-        dataSource.apply(snapShot, animatingDifferences: true)
+    private func applyForecastSnapShot(animatingDifferences: Bool = true) {
+        var forecastWeathersnapShot =  NSDiffableDataSourceSnapshot<Section, WeatherController.FiveDaysForecast>()
+        forecastWeathersnapShot.appendSections([.main])
+        forecastWeathersnapShot.appendItems(weatherController.fiveForecast)
+        forecastWeatherDataSource.apply(forecastWeathersnapShot, animatingDifferences: true)
+    }
+    
+    private func applyCurrentSnapShot(animatingDifference: Bool = true) {
+        var currentWeathersnapShot =  NSDiffableDataSourceSnapshot<Section, WeatherController.CurrentWeather>()
+        currentWeathersnapShot.appendSections([.main])
+        let currentWeathers = [weatherController.currentWeather!]
+        currentWeathersnapShot.appendItems(currentWeathers)
+        currentWeatherDataSource.apply(currentWeathersnapShot, animatingDifferences: true)
     }
     
     private func collectionViewDelegate() {
@@ -141,7 +141,7 @@ extension WeatherViewController: CurrentWeatherDelegate {
 
     func notifyToUpdateCurrentWeather() {
         print("notifyToUpdateCurrentWeather")
-        applySnapShot()
+        applyCurrentSnapShot()
     }
 }
 
@@ -149,6 +149,6 @@ extension WeatherViewController: FiveDaysForecastDelegate {
 
     func notifyToUpdateFiveDaysForecast() {
         print("notifyToUpdateCurrentWeather")
-//        applySnapShot()
+        applyForecastSnapShot()
     }
 }
