@@ -23,7 +23,10 @@ final class WeatherViewModel {
             weatherDataDelegate?.sendCurrentWeather()
         }
     }
-    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = [] {
+    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = [
+        FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test", temperature: 20),
+        FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test2", temperature: 25)
+    ] {
         didSet {
             weatherDataDelegate?.sendForecast()
         }
@@ -71,18 +74,35 @@ final class WeatherViewModel {
             }
         }
         
+        var forecastData: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = []
+        let group1 = DispatchGroup()
+        
         self.fiveDaysForecastWeatherViewModel.makeForecastWeather(
             weatherAPIManager: weatherAPIManager,
             coordinate: coordinate,
             location: location
         ) { [weak self] iconString, eachData in
-            
+            group1.enter()
             self?.fiveDaysForecastWeatherViewModel.makeForecastImage(
                 weatherAPIManager: weatherAPIManager,
                 icon: iconString,
                 eachData: eachData
-            )
+            ) { forecast in
+                forecastData.append(forecast)
+                
+                group1.leave()
+            }
+            
         }
+        group1.wait()
+        group1.notify(queue: .main) {
+            print(forecastData)
+        }
+        
+    }
+    
+    func forecast(with id: UUID) -> FiveDaysForecastWeatherViewModel.FiveDaysForecast? {
+        return fiveDaysForecastWeather.first(where: { $0.id == id })
     }
 }
 

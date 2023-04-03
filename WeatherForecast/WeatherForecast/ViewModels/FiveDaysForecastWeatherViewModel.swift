@@ -33,12 +33,12 @@ final class FiveDaysForecastWeatherViewModel {
         
         func makeForecastImage(weatherAPIManager: WeatherAPIManager?,
                                icon: String,
-                               eachData: Day
+                               eachData: Day,
+                               completion: @escaping (FiveDaysForecast) -> Void
         ) {
             weatherAPIManager?.fetchWeatherImage(icon: icon) { image in
-                let fiveDaysForecast = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
-                print(fiveDaysForecast)
-
+                let forecast = FiveDaysForecast(image: image, date: eachData.time, temperature: eachData.temperature.temperature)
+                completion(forecast)
             }
         }
 }

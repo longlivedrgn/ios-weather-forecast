@@ -54,8 +54,6 @@ final class CurrentWeatherViewModel {
             
             let currentWeatherData = CurrentWeather(image: weatherImage, address: address, temperatures: weatherData.temperature)
             completion(currentWeatherData)
-            
-            print("currentWeatherViewModel: \(currentWeatherData)")
         }
     }
 }
