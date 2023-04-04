@@ -27,13 +27,8 @@ final class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     private func configureHierarchy() {
-        weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
-        weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         view.addSubview(weatherCollectionView)
-        weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
-        weatherCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
-        weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
-        weatherCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
     }
     
     private func register() {
@@ -43,10 +38,16 @@ extension WeatherViewController {
     }
     
     private func collectionViewDelegate() {
-        weatherCollectionView.delegate = self
         weatherCollectionView.dataSource = self
         weatherController.currentWeatherDelegate = self
         weatherController.fiveDaysForecastDelegate = self
+    }
+    
+    private func createLayout() -> UICollectionViewLayout {
+        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
+        configuration.headerMode = .supplementary
+        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        return layout
     }
 }
 
@@ -64,17 +65,6 @@ extension WeatherViewController: FiveDaysForecastDelegate {
     }
 }
 
-extension WeatherViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.bounds.width, height: 120)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: 100, height: 100)
-    }
-
-}
-
 extension WeatherViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -86,6 +76,7 @@ extension WeatherViewController: UICollectionViewDataSource {
         return cell
     }
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return weatherController.fiveForecast.count
     }
@@ -95,6 +86,7 @@ extension WeatherViewController: UICollectionViewDataSource {
         case UICollectionView.elementKindSectionHeader:
             print("Asdf")
             let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath)
+            
             guard let headerView = headerView as? CurrentWeatherHeaderView else { return UICollectionReusableView() }
             headerView.weatherIconImage.image = weatherController.currentWeather?.image
             headerView.addressLabel.text = weatherController.currentWeather?.address

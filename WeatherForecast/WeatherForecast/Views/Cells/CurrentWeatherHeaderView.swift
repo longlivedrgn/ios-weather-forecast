@@ -57,6 +57,8 @@ class CurrentWeatherHeaderView: UICollectionReusableView {
         addSubview(CurrentTemperatureLabel)
         addSubview(minimumMaximumTemperatureLabel)
         
+        self.heightAnchor.constraint(equalToConstant: 110).isActive = true
+        
         weatherIconImage.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         weatherIconImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
         weatherIconImage.heightAnchor.constraint(equalToConstant: 40).isActive = true
