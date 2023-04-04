@@ -13,12 +13,12 @@ class WeatherViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        view.addSubview(collectionView)
         
         // cell 등록
         collectionView.register(CollectionViewListCell.self, forCellWithReuseIdentifier: "\(CollectionViewListCell.self)")
         // header 등록
         collectionView.register(CollectionViewHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(CollectionViewHeaderCell.self)")
+        view.addSubview(collectionView)
         return collectionView
     }()
     
@@ -27,7 +27,6 @@ class WeatherViewController: UIViewController {
         
         weatherViewModel.weatherDataDelegate = self
         collectionView.dataSource = self
-//        configureDataSource()
     }
 }
 
@@ -39,7 +38,7 @@ extension WeatherViewController {
         
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
             
-            var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
             configuration.headerMode = .supplementary
             let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
             return section
@@ -52,30 +51,33 @@ extension WeatherViewController {
 extension WeatherViewController: WeatherDataDelegate {
     func sendCurrentWeather() {
         print("viewController: sendCurrentWeather")
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
     
     func sendForecast() {
         print("viewController: sendForecast")
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
     
 }
 
 extension WeatherViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        return weatherViewModel.fiveDaysForecastWeather.count
+        return weatherViewModel.fiveDaysForecastWeather?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(CollectionViewListCell.self)", for: indexPath) as! CollectionViewListCell
-       
-        var contentConfiguration = UIListContentConfiguration.subtitleCell()
-        contentConfiguration.text = weatherViewModel.fiveDaysForecastWeather[indexPath.row].date
-        contentConfiguration.secondaryText = weatherViewModel.fiveDaysForecastWeather[indexPath.row].temperature.description
-        contentConfiguration.image = weatherViewModel.fiveDaysForecastWeather[indexPath.row].image
+        cell.fiveDaysForecastWeather = weatherViewModel.fiveDaysForecastWeather?[indexPath.row]
         
-        cell.contentConfiguration = contentConfiguration
         return cell
     }
     
@@ -83,10 +85,7 @@ extension WeatherViewController: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "\(CollectionViewHeaderCell.self)", for: indexPath) as! CollectionViewHeaderCell
-
-            var contentConfiguration = UIListContentConfiguration.subtitleCell()
-            contentConfiguration.text = "Header? 성공?"
-            header.contentConfiguration = contentConfiguration
+            header.currentWeather = weatherViewModel.currentWeather
             return header
         default:
             return UICollectionReusableView()

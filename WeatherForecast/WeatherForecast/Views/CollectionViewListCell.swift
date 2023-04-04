@@ -9,24 +9,32 @@ import UIKit
 
 class CollectionViewListCell: UICollectionViewListCell {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
+    // ?
+    var fiveDaysForecastWeather: FiveDaysForecastWeatherViewModel.FiveDaysForecast?
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        
+        var configuration = UIListContentConfiguration.subtitleCell()
+        configuration.text = fiveDaysForecastWeather?.date
+        configuration.secondaryText = fiveDaysForecastWeather?.temperature.description
+        configuration.image = fiveDaysForecastWeather?.image
+        contentConfiguration = configuration
     }
 }
 
 class CollectionViewHeaderCell: UICollectionViewListCell {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-    }
+    var currentWeather: CurrentWeatherViewModel.CurrentWeather?
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        
+        var configuration = UIListContentConfiguration.subtitleCell()
+        configuration.text = currentWeather?.address
+        configuration.secondaryText = currentWeather?.temperatures.temperature.description
+        configuration.image = currentWeather?.image
+        contentConfiguration = configuration
     }
 
 }

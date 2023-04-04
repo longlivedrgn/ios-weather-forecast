@@ -23,7 +23,7 @@ final class WeatherViewModel {
             weatherDataDelegate?.sendCurrentWeather()
         }
     }
-    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = [
+    var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast]? = [
         FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test", temperature: 20),
         FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test2", temperature: 25),
         FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test3", temperature: 30)
@@ -85,7 +85,7 @@ final class WeatherViewModel {
                 icon: iconString,
                 eachData: eachData
             ) { forecast in
-                self?.fiveDaysForecastWeather.append(forecast)
+                self?.fiveDaysForecastWeather?.append(forecast)
             }
             
         }
@@ -93,7 +93,7 @@ final class WeatherViewModel {
     }
     
     func forecast(with id: UUID) -> FiveDaysForecastWeatherViewModel.FiveDaysForecast? {
-        return fiveDaysForecastWeather.first(where: { $0.id == id })
+        return fiveDaysForecastWeather?.first(where: { $0.id == id })
     }
 }
 
