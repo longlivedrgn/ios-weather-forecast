@@ -15,7 +15,13 @@ final class WeatherViewController: UIViewController {
     private var weatherController = WeatherController()
     
     private var weatherCollectionView: UICollectionView!
-    
+    private var backgroundView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "backgroundImage")
+        imageView.contentMode = .scaleAspectFill
+        
+        return imageView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +34,8 @@ final class WeatherViewController: UIViewController {
 extension WeatherViewController {
     private func configureHierarchy() {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        // MARK: - 여기서 현재 날씨에 따라서 분기처리하는 게 어떨까?
+        weatherCollectionView.backgroundView = backgroundView
         view.addSubview(weatherCollectionView)
     }
     
