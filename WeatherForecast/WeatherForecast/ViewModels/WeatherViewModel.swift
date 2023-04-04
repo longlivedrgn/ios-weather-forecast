@@ -25,7 +25,8 @@ final class WeatherViewModel {
     }
     var fiveDaysForecastWeather: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = [
         FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test", temperature: 20),
-        FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test2", temperature: 25)
+        FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test2", temperature: 25),
+        FiveDaysForecastWeatherViewModel.FiveDaysForecast(date: "test3", temperature: 30)
     ] {
         didSet {
             weatherDataDelegate?.sendForecast()
@@ -74,29 +75,19 @@ final class WeatherViewModel {
             }
         }
         
-        var forecastData: [FiveDaysForecastWeatherViewModel.FiveDaysForecast] = []
-        let group1 = DispatchGroup()
-        
         self.fiveDaysForecastWeatherViewModel.makeForecastWeather(
             weatherAPIManager: weatherAPIManager,
             coordinate: coordinate,
             location: location
         ) { [weak self] iconString, eachData in
-            group1.enter()
             self?.fiveDaysForecastWeatherViewModel.makeForecastImage(
                 weatherAPIManager: weatherAPIManager,
                 icon: iconString,
                 eachData: eachData
             ) { forecast in
-                forecastData.append(forecast)
-                
-                group1.leave()
+                self?.fiveDaysForecastWeather.append(forecast)
             }
             
-        }
-        group1.wait()
-        group1.notify(queue: .main) {
-            print(forecastData)
         }
         
     }
