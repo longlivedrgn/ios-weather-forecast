@@ -33,8 +33,8 @@ extension WeatherViewController {
     
     private func register() {
         print("Cell register하기")
-        self.weatherCollectionView.register(CurrentWeatherCollectionViewCell.self, forCellWithReuseIdentifier: "CurrentWeatherCell")
-        self.weatherCollectionView.register(CurrentWeatherHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CurrentWeatherHeaderView")
+        self.weatherCollectionView.register(FiveDaysForecastCell.self, forCellWithReuseIdentifier: "FiveDaysForecastCell")
+        self.weatherCollectionView.register(CurrentWeatherHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CurrentWeatherHeaderCell")
     }
     
     private func collectionViewDelegate() {
@@ -68,7 +68,7 @@ extension WeatherViewController: FiveDaysForecastDelegate {
 extension WeatherViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = weatherCollectionView.dequeueReusableCell(withReuseIdentifier: "CurrentWeatherCell", for: indexPath) as! CurrentWeatherCollectionViewCell
+        let cell = weatherCollectionView.dequeueReusableCell(withReuseIdentifier: "FiveDaysForecastCell", for: indexPath) as! FiveDaysForecastCell
         let array = weatherController.fiveForecast
         cell.temperatureLabel.text = "\(array[indexPath.row].temperature)"
         cell.dateLabel.text = array[indexPath.row].date
@@ -84,20 +84,8 @@ extension WeatherViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            print("Asdf")
-            let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath)
-            
-            guard let headerView = headerView as? CurrentWeatherHeaderView else { return UICollectionReusableView() }
-            headerView.weatherIconImage.image = weatherController.currentWeather?.image
-            headerView.addressLabel.text = weatherController.currentWeather?.address
-            
-            let maximumTemperature = weatherController.currentWeather?.temperatures?.maximumTemperature ?? 0
-            let minimumTemperature = weatherController.currentWeather?.temperatures?.minimumTemperature ?? 0
-            let currentTemperature = weatherController.currentWeather?.temperatures?.currentTemperature ?? 0
-            
-            headerView.minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
-            
-            headerView.CurrentTemperatureLabel.text = "\(currentTemperature)"
+            let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderCell", for: indexPath) as! CurrentWeatherHeaderCell
+            headerView.currentWeather = weatherController.currentWeather
             return headerView
         default:
             print("Asdf")

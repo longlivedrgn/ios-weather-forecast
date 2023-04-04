@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CurrentWeatherCollectionViewCell: UICollectionViewCell {
+class FiveDaysForecastCell: UICollectionViewCell {
     
     var weatherIconImage: UIImageView = {
         let imageView = UIImageView()
