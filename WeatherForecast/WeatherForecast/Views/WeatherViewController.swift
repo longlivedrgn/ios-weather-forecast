@@ -41,6 +41,16 @@ extension WeatherViewController {
             var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
             configuration.headerMode = .supplementary
             let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
+            
+//            let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+//                layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44)),
+//                elementKind: UICollectionView.elementKindSectionHeader,
+//                alignment: .top)
+//            sectionHeader.zIndex = 2 // 스크롤 가능하게 설정
+//            sectionHeader.pinToVisibleBounds = false // 고정되지 않도록 설정
+//
+//            section.boundarySupplementaryItems = [sectionHeader]
+            
             return section
         }
         
@@ -70,13 +80,13 @@ extension WeatherViewController: WeatherDataDelegate {
 extension WeatherViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return weatherViewModel.fiveDaysForecastWeather?.count ?? 0
+        return weatherViewModel.fiveDaysForecastWeather.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(CollectionViewListCell.self)", for: indexPath) as! CollectionViewListCell
-        cell.fiveDaysForecastWeather = weatherViewModel.fiveDaysForecastWeather?[indexPath.row]
+        cell.fiveDaysForecastWeather = weatherViewModel.fiveDaysForecastWeather[indexPath.row]
         
         return cell
     }
@@ -86,6 +96,7 @@ extension WeatherViewController: UICollectionViewDataSource {
         case UICollectionView.elementKindSectionHeader:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "\(CollectionViewHeaderCell.self)", for: indexPath) as! CollectionViewHeaderCell
             header.currentWeather = weatherViewModel.currentWeather
+            
             return header
         default:
             return UICollectionReusableView()
