@@ -91,17 +91,6 @@ extension WeatherViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
         
-//        dataSource = UICollectionViewDiffableDataSource(collectionView: weatherCollectionView) {
-//            (collectionView: UICollectionView, indexPath: IndexPath, identifier: WeatherController.FiveDaysForecast) -> UICollectionViewCell? in
-//            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: identifier)
-//        }
-        
-
-        
-//        dataSource = UICollectionViewDiffableDataSource<Section, WeatherController.FiveDaysForecast>(collectionView: weatherCollectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-//            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
-//        })
-        
         dataSource.supplementaryViewProvider = { (weatherCollectionView, kind, index) in
             return weatherCollectionView.dequeueConfiguredReusableSupplementary(
                 using: headerRegistration, for: index)
