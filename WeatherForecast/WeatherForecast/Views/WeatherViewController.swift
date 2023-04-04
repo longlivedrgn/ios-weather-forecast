@@ -53,7 +53,7 @@ extension WeatherViewController {
 extension WeatherViewController: CurrentWeatherDelegate {
 
     func notifyToUpdateCurrentWeather() {
-        weatherCollectionView.reloadData()
+//        weatherCollectionView.reloadData()
     }
 }
 
