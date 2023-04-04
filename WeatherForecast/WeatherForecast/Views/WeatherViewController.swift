@@ -13,7 +13,6 @@ class WeatherViewController: UIViewController {
     
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        collectionView.backgroundColor = .blue
         view.addSubview(collectionView)
         
         // cell 등록
@@ -22,10 +21,6 @@ class WeatherViewController: UIViewController {
         collectionView.register(CollectionViewHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "\(CollectionViewHeaderCell.self)")
         return collectionView
     }()
-    
-    private enum Section {
-        case main
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,29 +47,6 @@ extension WeatherViewController {
         
         return layout
     }
-    
-//    private func configureDataSource() {
-//
-//        let headerRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, CurrentWeatherViewModel.CurrentWeather> { cell, indexPath, currentWeather in
-//
-//            var contentConfiguration = UIListContentConfiguration.subtitleCell()
-//            contentConfiguration.text = currentWeather.address
-//            contentConfiguration.secondaryText = currentWeather.temperatures.temperature.description
-//            contentConfiguration.image = currentWeather.image
-//
-//            cell.contentConfiguration = contentConfiguration
-//        }
-    
-//    let cellRegistration = UICollectionView.CellRegistration<CollectionViewListCell, FiveDaysForecastWeatherViewModel.FiveDaysForecast> { cell, indexPath, forecast in
-//
-//        var contentConfiguration = UIListContentConfiguration.subtitleCell()
-//        contentConfiguration.text = forecast.date
-//        contentConfiguration.secondaryText = forecast.temperature.description
-//        contentConfiguration.image = forecast.image
-//
-//        cell.contentConfiguration = contentConfiguration
-//    }
-//    }
 }
 
 extension WeatherViewController: WeatherDataDelegate {
