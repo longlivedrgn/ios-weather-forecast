@@ -31,7 +31,7 @@ final class WeatherController {
     private var weatherAPIManager: WeatherAPIManager?
     private let locationManager = LocationManager()
     var currentWeather: CurrentWeather?
-    var fiveForecast: [FiveDaysForecast] = []
+    var fiveDaysForecast: [FiveDaysForecast] = []
     
     weak var currentWeatherDelegate: CurrentWeatherDelegate?
     weak var fiveDaysForecastDelegate: FiveDaysForecastDelegate?
@@ -101,7 +101,7 @@ final class WeatherController {
                 self.weatherAPIManager?.fetchWeatherImage(icon: iconString, completion: { iconImage in
                     guard let iconImage = iconImage else { return }
                     let fiveDaysForecast = FiveDaysForecast(image: iconImage, date: time, temperature: temperature)
-                    self.fiveForecast.append(fiveDaysForecast)
+                    self.fiveDaysForecast.append(fiveDaysForecast)
                     group.leave()
                 })
             }

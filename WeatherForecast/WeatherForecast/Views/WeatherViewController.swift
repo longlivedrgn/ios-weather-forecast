@@ -32,7 +32,6 @@ extension WeatherViewController {
     }
     
     private func register() {
-        print("Cell register하기")
         self.weatherCollectionView.register(FiveDaysForecastCell.self, forCellWithReuseIdentifier: "FiveDaysForecastCell")
         self.weatherCollectionView.register(CurrentWeatherHeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "CurrentWeatherHeaderCell")
     }
@@ -69,16 +68,24 @@ extension WeatherViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = weatherCollectionView.dequeueReusableCell(withReuseIdentifier: "FiveDaysForecastCell", for: indexPath) as! FiveDaysForecastCell
-        let array = weatherController.fiveForecast
-        cell.temperatureLabel.text = "\(array[indexPath.row].temperature)"
-        cell.dateLabel.text = array[indexPath.row].date
-        cell.weatherIconImage.image = array[indexPath.row].image
+        let fiveDaysForecasts = weatherController.fiveDaysForecast
+        
+        let temperature = fiveDaysForecasts[indexPath.row].temperature
+        cell.temperatureLabel.text = "\(temperature)°"
+        
+        let date = fiveDaysForecasts[indexPath.row].date
+        let transformedDate = date.changeDateFormat()
+        cell.dateLabel.text = transformedDate
+        
+        let weatherIconImage = fiveDaysForecasts[indexPath.row].image
+        cell.weatherIconImage.image = weatherIconImage
+        
         return cell
     }
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return weatherController.fiveForecast.count
+        return weatherController.fiveDaysForecast.count
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {

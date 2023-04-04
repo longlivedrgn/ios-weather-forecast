@@ -33,11 +33,12 @@ class CurrentWeatherHeaderCell: UICollectionViewListCell {
         
         configuration.attributedText = NSAttributedString(string: addressAndTemperatureText, attributes: addressAndTemperatureTextAttributes)
         
+        let currentTemperatureText: String = "\(currentTemperature)°"
         let currentTemperatureTextAttribtues: [NSAttributedString.Key: Any] = [
             .font : UIFont.systemFont(ofSize: 30, weight: .semibold)
         ]
         
-        configuration.secondaryAttributedText = NSAttributedString(string: currentTemperature, attributes: currentTemperatureTextAttribtues)
+        configuration.secondaryAttributedText = NSAttributedString(string: currentTemperatureText, attributes: currentTemperatureTextAttribtues)
         
         configuration.textToSecondaryTextVerticalPadding = 10
         configuration.image = currentWeather?.image
