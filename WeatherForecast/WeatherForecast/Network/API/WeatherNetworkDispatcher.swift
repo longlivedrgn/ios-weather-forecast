@@ -30,45 +30,37 @@ final class WeatherNetworkDispatcher {
         return urlRequest
     }
     
-    func requestWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) async throws -> Decodable? {
+    func requestWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) async throws -> Decodable {
         
         let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
-        let (data, _) = try await networkSession.task(urlRequest: urlRequest)
+        let networkResult = try await networkSession.task(urlRequest: urlRequest)
         
-        let task = networkSession.task(urlRequest: urlRequest) { result in
-            
-            switch result {
-            case .success(let data):
-                do {
-                    let decodedData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType)
-                    completion(decodedData)
-                } catch {
-                    print(error.localizedDescription)
-                    completion(nil)
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-                completion(nil)
+        switch networkResult {
+        case .success(let data):
+            do {
+                let decodedData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType)
+                return decodedData
+            } catch {
+                // MARK: - Error : Network를 통해 데이터는 불러왔지만, decoding 실패 (NetworkError.failedDecoding)
+                throw error
             }
+        case .failure(let error):
+            // MARK: - Error: Network를 통해 데이터 불러오기 실패
+            throw error
         }
     }
     
-    func requestWeatherImage(icon: String, completion: @escaping (UIImage?) -> Void) {
+    func requestWeatherImage(icon: String) async throws -> UIImage? {
         
         let urlRequest = makeImageRequest(icon)
+        let networkResult = try await networkSession.task(urlRequest: urlRequest)
         
-        let task = networkSession.task(urlRequest: urlRequest) { result in
-            
-            switch result {
-            case .success(let data):
-                completion(UIImage(data: data))
-            case .failure(let error):
-                print(error.localizedDescription)
-                completion(nil)
-            }
+        switch networkResult {
+        case .success(let data):
+            return UIImage(data: data)
+        case .failure(let error):
+            throw error
         }
-        
-        task.resume()
     }
 }
 

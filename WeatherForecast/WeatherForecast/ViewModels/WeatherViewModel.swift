@@ -7,7 +7,7 @@
 
 import UIKit
 import CoreLocation
-
+  
 final class WeatherViewModel {
     
     private let fiveDaysForecastWeatherViewModel = FiveDaysForecastWeatherViewModel()
@@ -37,38 +37,37 @@ final class WeatherViewModel {
         
         let coordinate = self.makeCoordinate(from: location)
         
-        currentWeatherViewModel.fetchCurrentAddress(
-            locationManager: locationManager,
-            location: location
-        ) { [weak self] address in
+        Task {
+            let address = try await self.currentWeatherViewModel.fetchCurrentAddress(
+                locationManager: locationManager,
+                location: location
+            )
             
-            self?.currentWeatherViewModel.fetchCurrentInformation(
+            let currentWeatherDTO = try await self.currentWeatherViewModel.fetchCurrentInformation(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 coordinate: coordinate,
-                location: location,
-                address: address
-            ) { [weak self] iconString, weatherData in
-                
-                self?.currentWeatherViewModel.fetchCurrentImage(
-                    weatherNetworkDispatcher: weatherNetworkDispatcher,
-                    iconString: iconString,
-                    address: address,
-                    weatherData: weatherData
-                )
-            }
+                location: location
+            )
+            let currentWeather = try await self.currentWeatherViewModel.fetchCurrentImage(
+                weatherNetworkDispatcher: weatherNetworkDispatcher,
+                address: address,
+                currentWeatherDTO: currentWeatherDTO
+            )
+            self.currentWeather = currentWeather
+            print("여긴 WeatherViewModel: \(self.currentWeather)")
         }
         
-        self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
-            weatherNetworkDispatcher: weatherNetworkDispatcher,
-            coordinate: coordinate,
-            location: location
-        ) { [weak self] iconString, eachData in
-            
-            self?.fiveDaysForecastWeatherViewModel.fetchForecastImage(
+        Task {
+            let fiveDaysForecastDTO = try await self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
-                icon: iconString,
-                eachData: eachData
+                coordinate: coordinate,
+                location: location
             )
+            let fiveDaysForecast =  try await self.fiveDaysForecastWeatherViewModel.fetchForecastImage(
+                weatherNetworkDispatcher: weatherNetworkDispatcher, fiveDaysForecastDTO: fiveDaysForecastDTO
+            )
+            self.fiveDaysForecastWeather = fiveDaysForecast
+            print("여긴 WeatherViewModel: \(self.fiveDaysForecastWeather)")
         }
     }
 }

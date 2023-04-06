@@ -14,7 +14,7 @@ struct JSONNetworkDeserializer {
         self.decoder = decoder
     }
     
-    func deserialize(data: Data, to type: Decodable.Type) throws -> Decodable? {
+    func deserialize(data: Data, to type: Decodable.Type) throws -> Decodable {
         let data = try decoder.decode(type, from: data)
         return data
     }
