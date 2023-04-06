@@ -89,6 +89,7 @@ extension WeatherViewController: UICollectionViewDataSource {
 
 extension WeatherViewController: WeatherViewModelDelegate {
     func weatherViewModelDidFinishSetUp(_ viewModel: WeatherViewModel) {
+        print(#function)
         self.weatherCollectionView.reloadData()
     }
 }

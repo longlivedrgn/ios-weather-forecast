@@ -57,8 +57,10 @@ final class WeatherViewModel {
                 fiveDaysForecastWeather.append(fiveDaysForecast)
                 print(fiveDaysForecast)
             }
-            delegate?.weatherViewModelDidFinishSetUp(self)
             
+            DispatchQueue.main.async {
+                self.delegate?.weatherViewModelDidFinishSetUp(self)
+            }
         }
     }
 }
