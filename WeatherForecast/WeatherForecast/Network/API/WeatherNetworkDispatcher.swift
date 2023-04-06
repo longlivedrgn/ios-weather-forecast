@@ -24,52 +24,42 @@ final class WeatherNetworkDispatcher {
     }
     
     func makeImageRequest(_ icon: String) -> URLRequest {
-           let url = WeatherAPI.makeImageURL(icon: icon)
-           var urlRequest = URLRequest(url: url)
-           urlRequest.httpMethod = "GET"
-           return urlRequest
-       }
+        let url = WeatherAPI.makeImageURL(icon: icon)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        return urlRequest
+    }
     
-    func requestWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate, completion: @escaping (Decodable?) -> Void) {
-            
-            let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
-            
-            let task = networkSession.task(urlRequest: urlRequest) { result in
-                
-                switch result {
-                case .success(let data):
-                    do {
-                        let decodedData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType)
-                        completion(decodedData)
-                    } catch {
-                        print(error.localizedDescription)
-                        completion(nil)
-                    }
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    completion(nil)
-                }
-            }
-
-            task.resume()
+    func requestWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) async throws -> Decodable? {
+        
+        let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
+        let result = try await networkSession.fetchData(from: urlRequest)
+        switch result {
+        case .success(let data):
+            let decodeData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType)
+            return decodeData
+        case .failure(let error):
+            print(error.errorDescription)
+            return nil
         }
+    }
     
-    func requestWeatherImage(icon: String, completion: @escaping (UIImage?) -> Void) {
+    func requestWeatherImage(icon: String) async throws -> UIImage? {
+        
+        let urlRequest = makeImageRequest(icon)
+        
+        let result = try await networkSession.fetchData(from: urlRequest)
+        
+        switch result {
             
-            let urlRequest = makeImageRequest(icon)
-            
-            let task = networkSession.task(urlRequest: urlRequest) { result in
-                
-                switch result {
-                case .success(let data):
-                    completion(UIImage(data: data))
-                case .failure(let error):
-                    print(error.localizedDescription)
-                    completion(nil)
-                }
-            }
-            
-            task.resume()
+        case .success(let data):
+            guard let image = UIImage(data: data) else { throw NetworkError.emptyData }
+            return image
+        
+        case .failure(let error):
+            print(error.errorDescription)
+            return nil
         }
+    }
 }
- 
+

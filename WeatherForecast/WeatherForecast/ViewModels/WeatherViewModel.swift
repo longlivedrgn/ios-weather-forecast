@@ -41,47 +41,51 @@ final class WeatherViewModel {
         
         let coordinate = self.makeCoordinate(from: location)
         
-        let group = DispatchGroup()
-        
-        group.enter()
-        currentWeatherViewModel.fetchCurrentAddress(
-            locationManager: locationManager,
-            location: location
-        ) { [weak self] address in
-            self?.currentWeatherViewModel.fetchCurrentInformation(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                coordinate: coordinate,
-                location: location,
-                address: address
-            ) { [weak self] iconString, weatherData in
-                self?.currentWeatherViewModel.fetchCurrentImage(
-                    weatherNetworkDispatcher: weatherNetworkDispatcher,
-                    iconString: iconString,
-                    address: address,
-                    weatherData: weatherData
-                ) {
-                    group.leave()
-                }
-            }
+        Task {
+            let address = try await currentWeatherViewModel.fetchCurrentAddress(locationManager: coreLocationManager, location: location)
+            let (iconString, weatherData) = try await currentWeatherViewModel.fetchCurrentInformation(weatherNetworkDispatcher: weatherNetworkDispatcher, coordinate: coordinate)
+            let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(weatherNetworkDispatcher: weatherNetworkDispatcher, iconString: iconString)
+            let currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, temperatures: weatherData.temperature)
+            print(currentWeather)
+        }
+//        let address =
+//        currentWeatherViewModel.fetchCurrentAddress(
+//            locationManager: locationManager,
+//            location: location
+//        ) { [weak self] address in
+//            self?.currentWeatherViewModel.fetchCurrentInformation(
+//                weatherNetworkDispatcher: weatherNetworkDispatcher,
+//                coordinate: coordinate,
+//                location: location,
+//                address: address
+//            ) { [weak self] iconString, weatherData in
+//                self?.currentWeatherViewModel.fetchCurrentImage(
+//                    weatherNetworkDispatcher: weatherNetworkDispatcher,
+//                    iconString: iconString,
+//                    address: address,
+//                    weatherData: weatherData
+//                ) {
+//                    group.leave()
+//                }
+//            }
         }
         
-        self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
-            weatherNetworkDispatcher: weatherNetworkDispatcher,
-            coordinate: coordinate,
-            location: location
-        ) { [weak self] iconString, eachData in
-            
-            self?.fiveDaysForecastWeatherViewModel.fetchForecastImage(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                icon: iconString,
-                eachData: eachData
-            )
-        }
-        
-        group.notify(queue: .main) {
-            self.delegate?.weatherViewModelDidFinishSetUp(self)
-        }
-    }
+//        self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
+//            weatherNetworkDispatcher: weatherNetworkDispatcher,
+//            coordinate: coordinate,
+//            location: location
+//        ) { [weak self] iconString, eachData in
+//
+//            self?.fiveDaysForecastWeatherViewModel.fetchForecastImage(
+//                weatherNetworkDispatcher: weatherNetworkDispatcher,
+//                icon: iconString,
+//                eachData: eachData
+//            )
+//        }
+//
+//        group.notify(queue: .main) {
+//            self.delegate?.weatherViewModelDidFinishSetUp(self)
+//        }
 }
 
 extension WeatherViewModel: CoreLocationManagerDelegate {
