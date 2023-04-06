@@ -46,7 +46,6 @@ class FiveDaysForecastCell: UICollectionViewCell {
         self.contentView.addSubview(weatherIconImage)
         self.contentView.addSubview(dateLabel)
         self.contentView.addSubview(temperatureLabel)
-        contentView.heightAnchor.constraint(equalToConstant: 55).isActive = true
         
         weatherIconImage.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20).isActive = true
         weatherIconImage.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
