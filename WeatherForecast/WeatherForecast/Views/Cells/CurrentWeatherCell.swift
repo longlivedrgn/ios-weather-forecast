@@ -19,7 +19,7 @@ final class CurrentWeatherCell: UICollectionViewListCell {
            guard let address = currentWeather?.address,
                  let minimumTemperature = currentWeather?.temperatures.minimumTemperature,
                  let maximumTemperature = currentWeather?.temperatures.maximumTemperature,
-                 let currentTemperature = currentWeather?.temperatures.temperature
+                 let currentTemperature = currentWeather?.temperatures.averageTemperature
            else { return }
            
            let addressAndTemperatureText: String = """

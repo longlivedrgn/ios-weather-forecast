@@ -28,11 +28,11 @@ struct Day: Decodable {
 
 struct Temperature: Decodable {
     
-    let temperature, minimumTemperature, maximumTemperature: Double
+    let averageTemperature, minimumTemperature, maximumTemperature: Double
     
     enum CodingKeys: String, CodingKey {
         
-        case temperature = "temp"
+        case averageTemperature = "temp"
         case minimumTemperature = "temp_min"
         case maximumTemperature = "temp_max"
     }

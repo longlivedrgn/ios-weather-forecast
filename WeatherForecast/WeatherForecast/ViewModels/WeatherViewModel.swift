@@ -45,47 +45,22 @@ final class WeatherViewModel {
             let address = try await currentWeatherViewModel.fetchCurrentAddress(locationManager: coreLocationManager, location: location)
             let (iconString, weatherData) = try await currentWeatherViewModel.fetchCurrentInformation(weatherNetworkDispatcher: weatherNetworkDispatcher, coordinate: coordinate)
             let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(weatherNetworkDispatcher: weatherNetworkDispatcher, iconString: iconString)
-            let currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, temperatures: weatherData.temperature)
+            currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, temperatures: weatherData.temperature)
             print(currentWeather)
+            
+            let fiveDaysForecastWeatherDTO = try await fiveDaysForecastWeatherViewModel.fetchForecastWeather(weatherNetworkDispatcher: weatherNetworkDispatcher, coordinate: coordinate)
+            
+            for day in fiveDaysForecastWeatherDTO.list {
+                guard let iconString = day.weather.first?.icon else { return }
+                let fiveDaysForecastImage = try await fiveDaysForecastWeatherViewModel.fetchForecastImage(weatherNetworkDispatcher: weatherNetworkDispatcher, iconString: iconString)
+                let fiveDaysForecast = fiveDaysForecastWeatherViewModel.makeFiveDaysForecast(image: fiveDaysForecastImage, day: day)
+                fiveDaysForecastWeather.append(fiveDaysForecast)
+                print(fiveDaysForecast)
+            }
+            delegate?.weatherViewModelDidFinishSetUp(self)
+            
         }
-//        let address =
-//        currentWeatherViewModel.fetchCurrentAddress(
-//            locationManager: locationManager,
-//            location: location
-//        ) { [weak self] address in
-//            self?.currentWeatherViewModel.fetchCurrentInformation(
-//                weatherNetworkDispatcher: weatherNetworkDispatcher,
-//                coordinate: coordinate,
-//                location: location,
-//                address: address
-//            ) { [weak self] iconString, weatherData in
-//                self?.currentWeatherViewModel.fetchCurrentImage(
-//                    weatherNetworkDispatcher: weatherNetworkDispatcher,
-//                    iconString: iconString,
-//                    address: address,
-//                    weatherData: weatherData
-//                ) {
-//                    group.leave()
-//                }
-//            }
-        }
-        
-//        self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
-//            weatherNetworkDispatcher: weatherNetworkDispatcher,
-//            coordinate: coordinate,
-//            location: location
-//        ) { [weak self] iconString, eachData in
-//
-//            self?.fiveDaysForecastWeatherViewModel.fetchForecastImage(
-//                weatherNetworkDispatcher: weatherNetworkDispatcher,
-//                icon: iconString,
-//                eachData: eachData
-//            )
-//        }
-//
-//        group.notify(queue: .main) {
-//            self.delegate?.weatherViewModelDidFinishSetUp(self)
-//        }
+    }
 }
 
 extension WeatherViewModel: CoreLocationManagerDelegate {
