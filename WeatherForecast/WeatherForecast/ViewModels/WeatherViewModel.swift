@@ -38,6 +38,8 @@ final class WeatherViewModel {
         let coordinate = self.makeCoordinate(from: location)
         
         Task {
+            // MARK: - currentWeather
+
             let address = try await self.currentWeatherViewModel.fetchCurrentAddress(
                 locationManager: locationManager,
                 location: location
@@ -54,10 +56,9 @@ final class WeatherViewModel {
                 currentWeatherDTO: currentWeatherDTO
             )
             self.currentWeather = currentWeather
-            print("여긴 WeatherViewModel: \(self.currentWeather)")
-        }
         
-        Task {
+            // MARK: - fiveDaysForecastWeather
+
             let fiveDaysForecastDTO = try await self.fiveDaysForecastWeatherViewModel.fetchForecastWeather(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 coordinate: coordinate,
@@ -68,6 +69,7 @@ final class WeatherViewModel {
             )
             self.fiveDaysForecastWeather = fiveDaysForecast
             print("여긴 WeatherViewModel: \(self.fiveDaysForecastWeather)")
+            print("여긴 WeatherViewModel: \(self.currentWeather)")
         }
     }
 }
