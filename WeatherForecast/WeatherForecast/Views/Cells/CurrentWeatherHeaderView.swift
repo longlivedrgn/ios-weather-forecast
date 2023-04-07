@@ -10,6 +10,7 @@ import UIKit
 final class CurrentWeatherHeaderView: UICollectionReusableView {
     
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
+    weak var delegate: CurrentWeatherHeaderViewDelegate
     
     var weatherIconImage: UIImageView = {
         let imageView = UIImageView()
@@ -22,8 +23,9 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
     
     var changeLocationButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName: "magnifyinngglass"), for: .normal)
+        button.setTitle("위치 변경", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(changeLocationButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -31,6 +33,7 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
+        label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -39,6 +42,7 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         let label = UILabel()
         label.font = .systemFont(ofSize: 30)
         label.textAlignment = .center
+        label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -47,6 +51,7 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
         label.textAlignment = .center
+        label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -66,6 +71,7 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         addSubview(addressLabel)
         addSubview(currentTemperatureLabel)
         addSubview(minimumMaximumTemperatureLabel)
+        addSubview(changeLocationButton)
     }
     
     private func configureLayout() {
@@ -86,6 +92,9 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         
         currentTemperatureLabel.leftAnchor.constraint(equalTo: weatherIconImage.rightAnchor, constant: 10).isActive = true
         currentTemperatureLabel.topAnchor.constraint(equalTo: minimumMaximumTemperatureLabel.bottomAnchor, constant: 10).isActive = true
+        
+        changeLocationButton.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        changeLocationButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
     }
     
     func configure(currentWeather: CurrentWeatherViewModel.CurrentWeather?) {
@@ -104,5 +113,21 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         weatherIconImage.image = currentWeather?.image
         currentTemperatureLabel.text = "\(currentTemperatureValue)°"
         minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
+    }
+    
+    @objc func changeLocationButtonTapped(_ sender: UIButton) {
+        delegate.
+        let alertTitle = "위치 변경"
+        let alertMessage = "날씨를 받아올 위치의 위도와 경도를 입력해주세요."
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        
+        let confirmActionTitle = "변경"
+        let confirmAction = UIAlertAction(title: confirmActionTitle, style: .default)
+        
+        let cancelActionTitle = "취소"
+        let cancelAction = UIAlertAction(title: cancelActionTitle, style: .default)
+        
+        alert.addAction(cancelAction)
+        alert.addAction(confirmAction)
     }
 }
