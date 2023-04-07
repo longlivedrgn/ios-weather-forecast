@@ -19,33 +19,49 @@ final class CurrentWeatherViewModel {
     }
     
     func fetchCurrentAddress(locationManager: CoreLocationManager,
-                            location: CLLocation) async throws -> String {
+                             location: CLLocation) async throws -> String {
+        
         let location = try await locationManager.changeGeocoder(location: location)
-        guard let locality = location?.locality, let subLocality = location?.subLocality else { return "" }
+        
+        guard let locality = location?.locality, let subLocality = location?.subLocality else {
+            throw NetworkError.failedRequest
+        }
+        
         let address = "\(locality) \(subLocality)"
+        
         return address
     }
     
     func fetchCurrentInformation(weatherNetworkDispatcher: WeatherNetworkDispatcher,
-                                coordinate: Coordinate) async throws -> (String, CurrentWeatherDTO) {
+                                 coordinate: Coordinate) async throws -> CurrentWeatherDTO {
+        
         let decodedData = try await weatherNetworkDispatcher.requestWeatherInformation(of: .currentWeather, in: coordinate)
         
-        guard let weatherData = decodedData as? CurrentWeatherDTO else { throw NetworkError.failedDecoding }
-        guard let icon = weatherData.weather.first?.icon else { throw NetworkError.failedRequest }
+        guard let currentWeatherDTO = decodedData as? CurrentWeatherDTO else {
+            throw NetworkError.failedDecoding
+        }
         
-        return (icon, weatherData)
+        return currentWeatherDTO
     }
     
     func fetchCurrentImage(weatherNetworkDispatcher: WeatherNetworkDispatcher,
-                           iconString: String
+                           currentWeatherDTO: CurrentWeatherDTO
     ) async throws -> UIImage {
+        
+        guard let iconString = currentWeatherDTO.weather.first?.icon else {
+            throw NetworkError.failedRequest
+        }
         let image = try await weatherNetworkDispatcher.requestWeatherImage(icon: iconString)
-        guard let image = image else { throw NetworkError.emptyData }
+        
+        guard let image = image else {
+            throw NetworkError.emptyData
+        }
         return image
     }
     
-    func makeCurrentWeather(image: UIImage, address: String, temperatures: Temperature) -> CurrentWeather {
-        let currentWeather = CurrentWeather(image: image, address: address, temperatures: temperatures)
+    func makeCurrentWeather(image: UIImage, address: String, currentWeatherDTO: CurrentWeatherDTO) -> CurrentWeather {
+        let temperature = currentWeatherDTO.temperature
+        let currentWeather = CurrentWeather(image: image, address: address, temperatures: temperature)
         return currentWeather
     }
 }

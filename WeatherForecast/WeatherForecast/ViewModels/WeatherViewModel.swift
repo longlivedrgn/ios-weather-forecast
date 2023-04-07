@@ -42,13 +42,30 @@ final class WeatherViewModel {
         let coordinate = self.makeCoordinate(from: location)
         
         Task {
-            let address = try await currentWeatherViewModel.fetchCurrentAddress(locationManager: coreLocationManager, location: location)
-            let (iconString, weatherData) = try await currentWeatherViewModel.fetchCurrentInformation(weatherNetworkDispatcher: weatherNetworkDispatcher, coordinate: coordinate)
-            let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(weatherNetworkDispatcher: weatherNetworkDispatcher, iconString: iconString)
-            currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, temperatures: weatherData.temperature)
+            let address = try await currentWeatherViewModel.fetchCurrentAddress(
+                locationManager: coreLocationManager,
+                location: location)
+            
+            let currentWeatherDTO = try await currentWeatherViewModel.fetchCurrentInformation(
+                weatherNetworkDispatcher: weatherNetworkDispatcher,
+                coordinate: coordinate
+            )
+            
+            let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(
+                weatherNetworkDispatcher: weatherNetworkDispatcher,
+                currentWeatherDTO: currentWeatherDTO
+            )
+            
+            let currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, currentWeatherDTO: currentWeatherDTO)
+            
+            self.currentWeather = currentWeather
+            
             print(currentWeather)
             
-            let fiveDaysForecastWeatherDTO = try await fiveDaysForecastWeatherViewModel.fetchForecastWeather(weatherNetworkDispatcher: weatherNetworkDispatcher, coordinate: coordinate)
+            let fiveDaysForecastWeatherDTO = try await fiveDaysForecastWeatherViewModel.fetchForecastWeather(
+                weatherNetworkDispatcher: weatherNetworkDispatcher,
+                coordinate: coordinate
+            )
             
             for day in fiveDaysForecastWeatherDTO.list {
                 guard let iconString = day.weather.first?.icon else { return }
