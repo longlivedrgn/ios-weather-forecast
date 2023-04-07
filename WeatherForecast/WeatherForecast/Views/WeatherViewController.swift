@@ -46,7 +46,7 @@ extension WeatherViewController {
     private func register() {
         
         weatherCollectionView.register(cell: FiveDaysForecastCell.self)
-        weatherCollectionView.register(header: CurrentWeatherCell.self)
+        weatherCollectionView.register(header: CurrentWeatherHeaderView.self)
     }
     
     private func createLayout() -> UICollectionViewLayout {
@@ -109,10 +109,9 @@ extension WeatherViewController: UICollectionViewDataSource {
         
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            let headerCell = weatherCollectionView.dequeue(header: CurrentWeatherCell.self, for: indexPath)
-            headerCell.currentWeather = weatherViewModel.currentWeather
-            
-            return headerCell
+            guard let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath) as? CurrentWeatherHeaderView else { return UICollectionReusableView() }
+            headerView.currentWeather = weatherViewModel.currentWeather
+            return headerView
             
         default:
             return UICollectionReusableView()

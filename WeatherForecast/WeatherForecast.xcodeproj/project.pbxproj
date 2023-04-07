@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F08E26429DD125900B852B5 /* CurrentWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F08E26329DD125900B852B5 /* CurrentWeatherCell.swift */; };
+		4F08E26429DD125900B852B5 /* CurrentWeatherHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F08E26329DD125900B852B5 /* CurrentWeatherHeaderView.swift */; };
 		4F08E26829DD173600B852B5 /* UICollectionReusableView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F08E26729DD173600B852B5 /* UICollectionReusableView+.swift */; };
 		4F08E26A29DD176A00B852B5 /* UICollectionView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F08E26929DD176A00B852B5 /* UICollectionView+.swift */; };
 		4F2D797429C04DC500C30BE2 /* WeatherNetworkDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2D797329C04DC500C30BE2 /* WeatherNetworkDispatcher.swift */; };
@@ -58,7 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4F08E26329DD125900B852B5 /* CurrentWeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherCell.swift; sourceTree = "<group>"; };
+		4F08E26329DD125900B852B5 /* CurrentWeatherHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherHeaderView.swift; sourceTree = "<group>"; };
 		4F08E26729DD173600B852B5 /* UICollectionReusableView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionReusableView+.swift"; sourceTree = "<group>"; };
 		4F08E26929DD176A00B852B5 /* UICollectionView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+.swift"; sourceTree = "<group>"; };
 		4F2D797329C04DC500C30BE2 /* WeatherNetworkDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherNetworkDispatcher.swift; sourceTree = "<group>"; };
@@ -125,7 +125,7 @@
 		4F08E26229DD11F400B852B5 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				4F08E26329DD125900B852B5 /* CurrentWeatherCell.swift */,
+				4F08E26329DD125900B852B5 /* CurrentWeatherHeaderView.swift */,
 				873EC5D629DD1499008DBE99 /* FiveDaysForecastCell.swift */,
 			);
 			path = Cells;
@@ -443,7 +443,7 @@
 				876194D229D6D373005AB06D /* FiveDaysForecastWeatherViewModel.swift in Sources */,
 				876194D429D6D495005AB06D /* CoreLocationManager.swift in Sources */,
 				876194D829D6D4EE005AB06D /* CoreLocationManagerDelegate.swift in Sources */,
-				4F08E26429DD125900B852B5 /* CurrentWeatherCell.swift in Sources */,
+				4F08E26429DD125900B852B5 /* CurrentWeatherHeaderView.swift in Sources */,
 				87B6EE5D29C2A70A00BB19BC /* FiveDaysForecastDTO.swift in Sources */,
 				C79C8CF825ADDDF200EEE3F1 /* WeatherViewController.swift in Sources */,
 				80985D7C29D94E4F008BF073 /* APIKeys.swift in Sources */,
