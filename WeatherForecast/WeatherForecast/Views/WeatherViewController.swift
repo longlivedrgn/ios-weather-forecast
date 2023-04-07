@@ -109,8 +109,13 @@ extension WeatherViewController: UICollectionViewDataSource {
         
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            guard let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath) as? CurrentWeatherHeaderView else { return UICollectionReusableView() }
-            headerView.currentWeather = weatherViewModel.currentWeather
+            let currentWeather = weatherViewModel.currentWeather
+            
+            guard let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath) as? CurrentWeatherHeaderView else {
+                return UICollectionReusableView()
+            }
+            headerView.configure(currentWeather: currentWeather)
+            
             return headerView
             
         default:

@@ -20,6 +20,13 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         return imageView
     }()
     
+    var changeLocationButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "magnifyinngglass"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     var addressLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
@@ -59,26 +66,13 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         addSubview(addressLabel)
         addSubview(currentTemperatureLabel)
         addSubview(minimumMaximumTemperatureLabel)
-        
-        guard let address = currentWeather?.address,
-              let minimumTemperature = currentWeather?.temperatures.minimumTemperature,
-              let maximumTemperature = currentWeather?.temperatures.maximumTemperature,
-              let currentTemperature = currentWeather?.temperatures.averageTemperature
-        else { return }
-        
-        
-        let minimumTemperatureText = String(format: "%.1f", minimumTemperature)
-        let maximumTemperatureText = String(format: "%.1f", maximumTemperature)
-        let currentTemperatureValue = String(format: "%.1f", currentTemperature)
-        
-        addressLabel.text = address
-        weatherIconImage.image = currentWeather?.image
-        currentTemperatureLabel.text = "\(currentTemperatureValue)°"
-        minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
     }
     
     private func configureLayout() {
-        self.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        
+        let heightConstrinat = self.heightAnchor.constraint(equalToConstant: 105)
+        heightConstrinat.isActive = true
+        heightConstrinat.priority = .defaultHigh
         
         weatherIconImage.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         weatherIconImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
@@ -92,6 +86,23 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
         
         currentTemperatureLabel.leftAnchor.constraint(equalTo: weatherIconImage.rightAnchor, constant: 10).isActive = true
         currentTemperatureLabel.topAnchor.constraint(equalTo: minimumMaximumTemperatureLabel.bottomAnchor, constant: 10).isActive = true
-
+    }
+    
+    func configure(currentWeather: CurrentWeatherViewModel.CurrentWeather?) {
+        
+        guard let address = currentWeather?.address,
+              let minimumTemperature = currentWeather?.temperatures.minimumTemperature,
+              let maximumTemperature = currentWeather?.temperatures.maximumTemperature,
+              let currentTemperature = currentWeather?.temperatures.averageTemperature
+        else { return }
+        
+        let minimumTemperatureText = String(format: "%.1f", minimumTemperature)
+        let maximumTemperatureText = String(format: "%.1f", maximumTemperature)
+        let currentTemperatureValue = String(format: "%.1f", currentTemperature)
+        
+        addressLabel.text = address
+        weatherIconImage.image = currentWeather?.image
+        currentTemperatureLabel.text = "\(currentTemperatureValue)°"
+        minimumMaximumTemperatureLabel.text = "최저 \(minimumTemperature) 최고 \(maximumTemperature)"
     }
 }
