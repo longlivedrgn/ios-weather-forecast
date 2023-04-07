@@ -37,7 +37,9 @@ final class WeatherViewModel {
         return Coordinate(longitude: longitude, latitude: latitude)
     }
     
-    func execute(locationManager: CoreLocationManager, location: CLLocation, weatherNetworkDispatcher: WeatherNetworkDispatcher) {
+    func execute(locationManager: CoreLocationManager,
+                 location: CLLocation,
+                 weatherNetworkDispatcher: WeatherNetworkDispatcher) {
         
         let coordinate = self.makeCoordinate(from: location)
         
@@ -56,7 +58,11 @@ final class WeatherViewModel {
                 currentWeatherDTO: currentWeatherDTO
             )
             
-            let currentWeather = currentWeatherViewModel.makeCurrentWeather(image: currentWeatherImage, address: address, currentWeatherDTO: currentWeatherDTO)
+            let currentWeather = currentWeatherViewModel.makeCurrentWeather(
+                image: currentWeatherImage,
+                address: address,
+                currentWeatherDTO: currentWeatherDTO
+            )
             
             self.currentWeather = currentWeather
             
@@ -67,13 +73,17 @@ final class WeatherViewModel {
                 coordinate: coordinate
             )
             
-            for day in fiveDaysForecastWeatherDTO.list {
-                guard let iconString = day.weather.first?.icon else { return }
-                let fiveDaysForecastImage = try await fiveDaysForecastWeatherViewModel.fetchForecastImage(weatherNetworkDispatcher: weatherNetworkDispatcher, iconString: iconString)
-                let fiveDaysForecast = fiveDaysForecastWeatherViewModel.makeFiveDaysForecast(image: fiveDaysForecastImage, day: day)
-                fiveDaysForecastWeather.append(fiveDaysForecast)
-                print(fiveDaysForecast)
-            }
+            let fiveDaysForecastImages = try await fiveDaysForecastWeatherViewModel.fetchForecastImages(
+                weatherNetworkDispatcher: weatherNetworkDispatcher,
+                fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
+            )
+            
+            let fiveDaysForecasts = fiveDaysForecastWeatherViewModel.makeFiveDaysForecast(
+                images: fiveDaysForecastImages,
+                fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
+            )
+            
+            self.fiveDaysForecastWeather = fiveDaysForecasts
             
             DispatchQueue.main.async {
                 self.delegate?.weatherViewModelDidFinishSetUp(self)
@@ -83,7 +93,9 @@ final class WeatherViewModel {
 }
 
 extension WeatherViewModel: CoreLocationManagerDelegate {
-    func coreLocationManager(_ manager: CoreLocationManager, didUpdateLocation location: CLLocation) {
+    func coreLocationManager(_ manager: CoreLocationManager,
+                             didUpdateLocation location: CLLocation) {
+        
         execute(
             locationManager: manager,
             location: location,
@@ -93,13 +105,17 @@ extension WeatherViewModel: CoreLocationManagerDelegate {
 }
 
 extension WeatherViewModel: CurrentWeatherViewModelDelegate {
-    func currentWeatherViewModel(_ viewModel: CurrentWeatherViewModel, didCreateModelObject currentWeather: CurrentWeatherViewModel.CurrentWeather) {
+    func currentWeatherViewModel(_ viewModel: CurrentWeatherViewModel,
+                                 didCreateModelObject currentWeather: CurrentWeatherViewModel.CurrentWeather) {
+        
         self.currentWeather = currentWeather
     }
 }
 
 extension WeatherViewModel: FiveDaysForecastWeatherViewModelDelegate {
-    func fiveDaysForecastWeatherViewModel(_ viewModel: FiveDaysForecastWeatherViewModel, didCreateModelObject fiveDaysForecastWeather: FiveDaysForecastWeatherViewModel.FiveDaysForecast) {
+    func fiveDaysForecastWeatherViewModel(_ viewModel: FiveDaysForecastWeatherViewModel,
+                                          didCreateModelObject fiveDaysForecastWeather: FiveDaysForecastWeatherViewModel.FiveDaysForecast) {
+        
         self.fiveDaysForecastWeather.append(fiveDaysForecastWeather)
     }
 }

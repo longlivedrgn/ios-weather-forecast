@@ -45,8 +45,7 @@ final class CurrentWeatherViewModel {
     }
     
     func fetchCurrentImage(weatherNetworkDispatcher: WeatherNetworkDispatcher,
-                           currentWeatherDTO: CurrentWeatherDTO
-    ) async throws -> UIImage {
+                           currentWeatherDTO: CurrentWeatherDTO) async throws -> UIImage {
         
         guard let iconString = currentWeatherDTO.weather.first?.icon else {
             throw NetworkError.failedRequest
@@ -59,7 +58,10 @@ final class CurrentWeatherViewModel {
         return image
     }
     
-    func makeCurrentWeather(image: UIImage, address: String, currentWeatherDTO: CurrentWeatherDTO) -> CurrentWeather {
+    func makeCurrentWeather(image: UIImage,
+                            address: String,
+                            currentWeatherDTO: CurrentWeatherDTO) -> CurrentWeather {
+        
         let temperature = currentWeatherDTO.temperature
         let currentWeather = CurrentWeather(image: image, address: address, temperatures: temperature)
         return currentWeather

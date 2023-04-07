@@ -17,31 +17,54 @@ final class FiveDaysForecastWeatherViewModel {
         let date: String
         let temperature: Double
     }
-    func fetchForecastWeather(weatherNetworkDispatcher: WeatherNetworkDispatcher, coordinate: Coordinate
-    ) async throws -> FiveDaysForecastDTO {
+    
+    func fetchForecastWeather(weatherNetworkDispatcher: WeatherNetworkDispatcher,
+                              coordinate: Coordinate) async throws -> FiveDaysForecastDTO {
         
         let decodedData = try await weatherNetworkDispatcher.requestWeatherInformation(of: .fiveDaysForecast, in: coordinate)
         
-        guard let weatherData = decodedData as? FiveDaysForecastDTO else {
+        guard let fiveDaysForecastDTO = decodedData as? FiveDaysForecastDTO else {
             throw NetworkError.failedDecoding
         }
         
-        return weatherData
+        return fiveDaysForecastDTO
     }
     
-    func fetchForecastImage(weatherNetworkDispatcher: WeatherNetworkDispatcher,
-                            iconString: String) async throws -> UIImage {
-        let image = try await weatherNetworkDispatcher.requestWeatherImage(icon: iconString)
-        guard let image = image else {
-            throw NetworkError.emptyData }
-        return image
-    }
-    
-    func makeFiveDaysForecast(image: UIImage, day: Day) -> FiveDaysForecast {
-        let date = day.time
-        let temperature = day.temperature.averageTemperature
-        let fiveDaysForecastWeather = FiveDaysForecast(image: image, date: date, temperature: temperature)
+    func fetchForecastImages(weatherNetworkDispatcher: WeatherNetworkDispatcher,
+                             fiveDaysForecastDTO: FiveDaysForecastDTO) async throws -> [UIImage] {
         
-        return fiveDaysForecastWeather
+        var images: [UIImage] = []
+        
+        for day in fiveDaysForecastDTO.list {
+            guard let iconString = day.weather.first?.icon else {
+                throw NetworkError.emptyData
+            }
+            
+            let image = try await weatherNetworkDispatcher.requestWeatherImage(icon: iconString)
+            
+            guard let image = image else {
+                throw NetworkError.emptyData
+            }
+            
+            images.append(image)
+        }
+        
+        return images
+    }
+    
+    func makeFiveDaysForecast(images: [UIImage],
+                              fiveDaysForecastDTO: FiveDaysForecastDTO) -> [FiveDaysForecast] {
+        
+        var fiveDaysForecast: [FiveDaysForecast] = []
+        
+        for (index, day) in fiveDaysForecastDTO.list.enumerated() {
+            let date = day.time
+            let temeperature = day.temperature.averageTemperature
+            let fiveDaysForecastWeather = FiveDaysForecast(image: images[index], date: date, temperature: temeperature)
+            
+            fiveDaysForecast.append(fiveDaysForecastWeather)
+            
+        }
+        return fiveDaysForecast
     }
 }
