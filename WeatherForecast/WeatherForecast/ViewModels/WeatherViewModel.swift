@@ -44,46 +44,49 @@ final class WeatherViewModel {
         let coordinate = self.makeCoordinate(from: location)
         
         Task {
-            let address = try await currentWeatherViewModel.fetchCurrentAddress(
-                locationManager: coreLocationManager,
-                location: location)
-            
-            let currentWeatherDTO = try await currentWeatherViewModel.fetchCurrentInformation(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                coordinate: coordinate
-            )
-            
-            let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                currentWeatherDTO: currentWeatherDTO
-            )
-            
-            let currentWeather = currentWeatherViewModel.makeCurrentWeather(
-                image: currentWeatherImage,
-                address: address,
-                currentWeatherDTO: currentWeatherDTO
-            )
-            
-            self.currentWeather = currentWeather
-            
-            print(currentWeather)
-            
-            let fiveDaysForecastWeatherDTO = try await fiveDaysForecastWeatherViewModel.fetchForecastWeather(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                coordinate: coordinate
-            )
-            
-            let fiveDaysForecastImages = try await fiveDaysForecastWeatherViewModel.fetchForecastImages(
-                weatherNetworkDispatcher: weatherNetworkDispatcher,
-                fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
-            )
-            
-            let fiveDaysForecasts = fiveDaysForecastWeatherViewModel.makeFiveDaysForecast(
-                images: fiveDaysForecastImages,
-                fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
-            )
-            
-            self.fiveDaysForecastWeather = fiveDaysForecasts
+            do {
+                let address = try await currentWeatherViewModel.fetchCurrentAddress(
+                    locationManager: coreLocationManager,
+                    location: location)
+                
+                let currentWeatherDTO = try await currentWeatherViewModel.fetchCurrentInformation(
+                    weatherNetworkDispatcher: weatherNetworkDispatcher,
+                    coordinate: coordinate
+                )
+                
+                let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(
+                    weatherNetworkDispatcher: weatherNetworkDispatcher,
+                    currentWeatherDTO: currentWeatherDTO
+                )
+                
+                let currentWeather = currentWeatherViewModel.makeCurrentWeather(
+                    image: currentWeatherImage,
+                    address: address,
+                    currentWeatherDTO: currentWeatherDTO
+                )
+                
+                self.currentWeather = currentWeather
+                                
+                let fiveDaysForecastWeatherDTO = try await fiveDaysForecastWeatherViewModel.fetchForecastWeather(
+                    weatherNetworkDispatcher: weatherNetworkDispatcher,
+                    coordinate: coordinate
+                )
+                
+                let fiveDaysForecastImages = try await fiveDaysForecastWeatherViewModel.fetchForecastImages(
+                    weatherNetworkDispatcher: weatherNetworkDispatcher,
+                    fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
+                )
+                
+                let fiveDaysForecasts = fiveDaysForecastWeatherViewModel.makeFiveDaysForecast(
+                    images: fiveDaysForecastImages,
+                    fiveDaysForecastDTO: fiveDaysForecastWeatherDTO
+                )
+                
+                self.fiveDaysForecastWeather = fiveDaysForecasts
+                
+            } catch {
+                print(error.localizedDescription)
+            }
             
             DispatchQueue.main.async {
                 self.delegate?.weatherViewModelDidFinishSetUp(self)

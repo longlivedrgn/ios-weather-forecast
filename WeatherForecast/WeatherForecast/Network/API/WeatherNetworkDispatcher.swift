@@ -35,10 +35,12 @@ final class WeatherNetworkDispatcher {
         
         let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
         let result = try await networkSession.fetchData(from: urlRequest)
+        
         switch result {
         case .success(let data):
-            let decodeData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType)
+            guard let decodeData = try self.deserializer.deserialize(data: data, to: weatherAPI.decodingType) else { throw NetworkError.failedDecoding}
             return decodeData
+            
         case .failure(let error):
             print(error.errorDescription)
             return nil
@@ -54,9 +56,9 @@ final class WeatherNetworkDispatcher {
         switch result {
             
         case .success(let data):
-            guard let image = UIImage(data: data) else { throw NetworkError.emptyData }
+            guard let image = UIImage(data: data) else { throw NetworkError.inappropriateData }
             return image
-        
+            
         case .failure(let error):
             print(error.errorDescription)
             return nil

@@ -24,7 +24,7 @@ final class FiveDaysForecastWeatherViewModel {
         let decodedData = try await weatherNetworkDispatcher.requestWeatherInformation(of: .fiveDaysForecast, in: coordinate)
         
         guard let fiveDaysForecastDTO = decodedData as? FiveDaysForecastDTO else {
-            throw NetworkError.failedDecoding
+            throw NetworkError.failedtypeCasting
         }
         
         return fiveDaysForecastDTO
@@ -37,13 +37,13 @@ final class FiveDaysForecastWeatherViewModel {
         
         for day in fiveDaysForecastDTO.list {
             guard let iconString = day.weather.first?.icon else {
-                throw NetworkError.emptyData
+                throw NetworkError.failedtypeCasting
             }
             
             let image = try await weatherNetworkDispatcher.requestWeatherImage(icon: iconString)
             
             guard let image = image else {
-                throw NetworkError.emptyData
+                throw NetworkError.failedtypeCasting
             }
             
             images.append(image)

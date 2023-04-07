@@ -17,16 +17,12 @@ final class NetworkSession {
     }
     
     func fetchData(from urlRequest: URLRequest) async throws -> NetworkResult {
-        do {
-            let (data, response) = try await session.data(for: urlRequest)
-            guard response.checkResponse else {
-                return .failure(.outOfReponseCode)
-            }
-            return .success(data)
-        } catch is URLError {
-            return .failure(.failedRequest)
-        } catch is DecodingError {
-            return .failure(.emptyData)
+        let (data, response) = try await session.data(for: urlRequest)
+        
+        guard response.checkResponse else {
+            return .failure(.outOfReponseCode)
         }
+        
+        return .success(data)
     }
 }

@@ -24,7 +24,7 @@ final class CurrentWeatherViewModel {
         let location = try await locationManager.changeGeocoder(location: location)
         
         guard let locality = location?.locality, let subLocality = location?.subLocality else {
-            throw NetworkError.failedRequest
+            throw NetworkError.failedtypeCasting
         }
         
         let address = "\(locality) \(subLocality)"
@@ -38,7 +38,7 @@ final class CurrentWeatherViewModel {
         let decodedData = try await weatherNetworkDispatcher.requestWeatherInformation(of: .currentWeather, in: coordinate)
         
         guard let currentWeatherDTO = decodedData as? CurrentWeatherDTO else {
-            throw NetworkError.failedDecoding
+            throw NetworkError.failedtypeCasting
         }
         
         return currentWeatherDTO
@@ -48,12 +48,12 @@ final class CurrentWeatherViewModel {
                            currentWeatherDTO: CurrentWeatherDTO) async throws -> UIImage {
         
         guard let iconString = currentWeatherDTO.weather.first?.icon else {
-            throw NetworkError.failedRequest
+            throw NetworkError.failedtypeCasting
         }
         let image = try await weatherNetworkDispatcher.requestWeatherImage(icon: iconString)
         
         guard let image = image else {
-            throw NetworkError.emptyData
+            throw NetworkError.failedtypeCasting
         }
         return image
     }
