@@ -37,8 +37,9 @@ final class CurrentWeatherCell: UICollectionViewListCell {
            
            configuration.attributedText = NSAttributedString(string: addressAndTemperatureText, attributes: addressAndTemperatureTextAttributes)
            configuration.textProperties.color = .white
-
-           let currentTemperatureText: String = "\(currentTemperature)°"
+           
+           let currentTemperatureValue = String(format: "%.1f", currentTemperature)
+           let currentTemperatureText: String = "\(currentTemperatureValue)°"
            let currentTemperatureTextAttribtues: [NSAttributedString.Key: Any] = [
                .font : UIFont.systemFont(ofSize: 30, weight: .semibold)
            ]
