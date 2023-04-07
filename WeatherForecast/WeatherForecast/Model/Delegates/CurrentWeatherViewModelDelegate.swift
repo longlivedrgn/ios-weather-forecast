@@ -8,5 +8,6 @@
 import Foundation
 
 protocol CurrentWeatherViewModelDelegate: AnyObject {
-    func currentWeatherViewModel(_ viewModel: CurrentWeatherViewModel, didCreateModelObject currentWeather: CurrentWeatherViewModel.CurrentWeather)
+    func currentWeatherViewModel(_ viewModel: CurrentWeatherViewModel,
+                                 didCreateModelObject currentWeather: CurrentWeatherViewModel.CurrentWeather)
 }

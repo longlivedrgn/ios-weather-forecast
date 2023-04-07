@@ -30,7 +30,8 @@ final class WeatherNetworkDispatcher {
         return urlRequest
     }
     
-    func requestWeatherInformation(of weatherAPI: WeatherAPI, in coordinate: Coordinate) async throws -> Decodable? {
+    func requestWeatherInformation(of weatherAPI: WeatherAPI,
+                                   in coordinate: Coordinate) async throws -> Decodable? {
         
         let urlRequest = makeWeatherRequest(of: weatherAPI, in: coordinate)
         let result = try await networkSession.fetchData(from: urlRequest)

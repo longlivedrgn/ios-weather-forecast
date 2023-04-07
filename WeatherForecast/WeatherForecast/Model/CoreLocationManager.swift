@@ -31,13 +31,15 @@ final class CoreLocationManager: NSObject {
 
 extension CoreLocationManager: CLLocationManagerDelegate {
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation]) {
         
         guard let location = locations.last else { return }
         delegate?.coreLocationManager(self, didUpdateLocation: location)
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    func locationManager(_ manager: CLLocationManager,
+                         didFailWithError error: Error) {
         print("error")
     }
     

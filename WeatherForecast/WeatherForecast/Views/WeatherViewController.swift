@@ -54,11 +54,15 @@ extension WeatherViewController {
 }
 
 extension WeatherViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        
         weatherViewModel.fiveDaysForecastWeather.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = weatherCollectionView.dequeue(cell: FiveDaysForecastCell.self, for: indexPath)
         let fiveDaysForecasts = weatherViewModel.fiveDaysForecastWeather
         
@@ -75,7 +79,10 @@ extension WeatherViewController: UICollectionViewDataSource {
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             let headerCell = weatherCollectionView.dequeue(header: CurrentWeatherCell.self, for: indexPath)
