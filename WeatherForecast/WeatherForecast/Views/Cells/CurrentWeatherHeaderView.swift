@@ -7,10 +7,14 @@
 
 import UIKit
 
+protocol CurrentWeatherHeaderViewDelegate: AnyObject {
+    func currentWeatherHeaderViewButtonTapped(_ headerView: CurrentWeatherHeaderView)
+}
+
 final class CurrentWeatherHeaderView: UICollectionReusableView {
     
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
-    weak var delegate: CurrentWeatherHeaderViewDelegate
+    weak var delegate: CurrentWeatherHeaderViewDelegate?
     
     var weatherIconImage: UIImageView = {
         let imageView = UIImageView()
@@ -116,18 +120,7 @@ final class CurrentWeatherHeaderView: UICollectionReusableView {
     }
     
     @objc func changeLocationButtonTapped(_ sender: UIButton) {
-        delegate.
-        let alertTitle = "위치 변경"
-        let alertMessage = "날씨를 받아올 위치의 위도와 경도를 입력해주세요."
-        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
-        
-        let confirmActionTitle = "변경"
-        let confirmAction = UIAlertAction(title: confirmActionTitle, style: .default)
-        
-        let cancelActionTitle = "취소"
-        let cancelAction = UIAlertAction(title: cancelActionTitle, style: .default)
-        
-        alert.addAction(cancelAction)
-        alert.addAction(confirmAction)
+        print("button Tapped")
+        delegate?.currentWeatherHeaderViewButtonTapped(self)
     }
 }

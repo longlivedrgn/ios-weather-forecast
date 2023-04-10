@@ -10,7 +10,7 @@ import CoreLocation
 
 final class CurrentWeatherViewModel {
     
-    weak var delegate: CurrentWeatherViewModelDelegate?
+//    weak var delegate: CurrentWeatherViewModelDelegate?
     
     struct CurrentWeather {
         let image: UIImage?

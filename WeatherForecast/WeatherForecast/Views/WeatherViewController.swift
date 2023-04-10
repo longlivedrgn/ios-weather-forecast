@@ -114,6 +114,7 @@ extension WeatherViewController: UICollectionViewDataSource {
             guard let headerView = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CurrentWeatherHeaderView", for: indexPath) as? CurrentWeatherHeaderView else {
                 return UICollectionReusableView()
             }
+            headerView.delegate = self
             headerView.configure(currentWeather: currentWeather)
             
             return headerView
@@ -130,3 +131,41 @@ extension WeatherViewController: WeatherViewModelDelegate {
         self.weatherCollectionView.reloadData()
     }
 }
+
+extension WeatherViewController: CurrentWeatherHeaderViewDelegate {
+    func currentWeatherHeaderViewButtonTapped(_ headerView: CurrentWeatherHeaderView) {
+        
+        // 함수로 빼기!
+        let alertTitle = "위치 변경"
+        let alertMessage = "날씨를 받아올 위치의 위도와 경도를 입력해주세요."
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        
+        alert.addTextField { textField in
+            textField.placeholder = "위도"
+        }
+        
+        alert.addTextField { textField in
+            textField.placeholder = "경도"
+        }
+        
+        let confirmActionTitle = "변경"
+        let confirmAction = UIAlertAction(title: confirmActionTitle, style: .default) { _ in
+            // 에러 처리하기
+            let latitude = Double(alert.textFields?[0].text ?? "0.0") ?? 0.0
+            let longitude = Double(alert.textFields?[1].text ?? "0.0") ?? 0.0
+            
+            let location = CLLocation(latitude: latitude, longitude: longitude)
+            NotificationCenter.default.post(name: Notification.Name("currentWeatherHeaderView"), object: nil, userInfo: ["ChangedLocation": location])
+            print("asdf")
+        }
+        
+        let cancelActionTitle = "취소"
+        let cancelAction = UIAlertAction(title: cancelActionTitle, style: .default)
+        
+        alert.addAction(cancelAction)
+        alert.addAction(confirmAction)
+        
+        self.present(alert, animated: true)
+    }
+}
+

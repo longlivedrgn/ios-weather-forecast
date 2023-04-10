@@ -10,7 +10,7 @@ import CoreLocation
 
 final class FiveDaysForecastWeatherViewModel {
     
-    weak var delegate: FiveDaysForecastWeatherViewModelDelegate?
+//    weak var delegate: FiveDaysForecastWeatherViewModelDelegate?
     
     struct FiveDaysForecast {
         var image: UIImage?

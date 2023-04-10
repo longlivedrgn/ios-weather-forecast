@@ -24,8 +24,7 @@ final class WeatherViewModel {
     init(networkSession: NetworkSession = NetworkSession(session: URLSession.shared)) {
         weatherNetworkDispatcher = WeatherNetworkDispatcher(networkSession: networkSession)
         coreLocationManager.delegate = self
-        currentWeatherViewModel.delegate = self
-        fiveDaysForecastWeatherViewModel.delegate = self
+        NotificationCenter.default.addObserver(self, selector: #selector(changeLocation(notification:)), name: Notification.Name("currentWeatherHeaderView"), object: nil)
     }
     
     private func makeCoordinate(from location: CLLocation) -> Coordinate {
@@ -41,17 +40,18 @@ final class WeatherViewModel {
                  weatherNetworkDispatcher: WeatherNetworkDispatcher) {
         
         let coordinate = self.makeCoordinate(from: location)
-        
+        print(coordinate)
         Task {
             let address = try await currentWeatherViewModel.fetchCurrentAddress(
                 locationManager: coreLocationManager,
                 location: location)
-            
+            print(address)
             let currentWeatherDTO = try await currentWeatherViewModel.fetchCurrentInformation(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 coordinate: coordinate
             )
-            
+            print("WHat?..")
+            print(currentWeatherDTO)
             let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 currentWeatherDTO: currentWeatherDTO
@@ -99,18 +99,9 @@ extension WeatherViewModel: CoreLocationManagerDelegate {
             weatherNetworkDispatcher: weatherNetworkDispatcher
         )
     }
-}
-
-extension WeatherViewModel: CurrentWeatherViewModelDelegate {
-    func currentWeatherViewModel(_ viewModel: CurrentWeatherViewModel,
-                                 didCreateModelObject currentWeather: CurrentWeatherViewModel.CurrentWeather) {
-        self.currentWeather = currentWeather
-    }
-}
-
-extension WeatherViewModel: FiveDaysForecastWeatherViewModelDelegate {
-    func fiveDaysForecastWeatherViewModel(_ viewModel: FiveDaysForecastWeatherViewModel,
-                                          didCreateModelObject fiveDaysForecastWeather: FiveDaysForecastWeatherViewModel.FiveDaysForecast) {
-        self.fiveDaysForecastWeather.append(fiveDaysForecastWeather)
+    
+    @objc func changeLocation(notification: Notification) {
+        guard let location = notification.userInfo?["ChangedLocation"] as? CLLocation else { return }
+        execute(locationManager: coreLocationManager, location: location, weatherNetworkDispatcher: weatherNetworkDispatcher)
     }
 }
