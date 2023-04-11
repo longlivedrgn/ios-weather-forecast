@@ -40,18 +40,17 @@ final class WeatherViewModel {
                  weatherNetworkDispatcher: WeatherNetworkDispatcher) {
         
         let coordinate = self.makeCoordinate(from: location)
-        print(coordinate)
+        
         Task {
             let address = try await currentWeatherViewModel.fetchCurrentAddress(
                 locationManager: coreLocationManager,
                 location: location)
-            print(address)
+            
             let currentWeatherDTO = try await currentWeatherViewModel.fetchCurrentInformation(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 coordinate: coordinate
             )
-            print("WHat?..")
-            print(currentWeatherDTO)
+            
             let currentWeatherImage = try await currentWeatherViewModel.fetchCurrentImage(
                 weatherNetworkDispatcher: weatherNetworkDispatcher,
                 currentWeatherDTO: currentWeatherDTO

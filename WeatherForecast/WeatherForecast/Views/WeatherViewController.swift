@@ -19,6 +19,8 @@ class WeatherViewController: UIViewController {
         return imageView
     }()
     
+    lazy var weatherNavigationBar = WeatherNavigationBar()
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
@@ -30,11 +32,12 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     private func configureHierarchy() {
-        
+//        let frame = CGRect(x: 0, y: 60, width: view.frame.width, height: view.frame.height)]
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
         weatherCollectionView.backgroundView = backgroundImageView
         configureRefreshControl(in: weatherCollectionView)
-        view.addSubview(weatherCollectionView)
+        view.addSubview(weatherNavigationBar)
+//        view.addSubview(weatherCollectionView)
     }
     
     private func collectionViewDelegate() {
@@ -155,8 +158,6 @@ extension WeatherViewController: CurrentWeatherHeaderViewDelegate {
             let longitude = Double(alert.textFields?[1].text ?? "0.0") ?? 0.0
             
             let location = CLLocation(latitude: latitude, longitude: longitude)
-            NotificationCenter.default.post(name: Notification.Name("currentWeatherHeaderView"), object: nil, userInfo: ["ChangedLocation": location])
-            print("asdf")
         }
         
         let cancelActionTitle = "취소"
@@ -169,3 +170,40 @@ extension WeatherViewController: CurrentWeatherHeaderViewDelegate {
     }
 }
 
+extension WeatherViewController {
+    
+    class WeatherNavigationBar: UINavigationBar {
+        var weatherNavigationItem: UINavigationItem = {
+            let navigationItem = UINavigationItem()
+            navigationItem.title = "WeatherController"
+            return navigationItem
+        }()
+        
+        var changeLocationButton: UIBarButtonItem = {
+            let barButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: nil, action: #selector(changeLocationButtonTapped))
+            return barButtonItem
+        }()
+        
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            setUpUI()
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError()
+        }
+        
+        private func setUpUI() {
+            var statusBarHeight: CGFloat = 0
+            statusBarHeight = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+            self.frame = CGRect(x: 0, y: statusBarHeight, width: view.frame.width, height: statusBarHeight)
+            weatherNavigationItem.rightBarButtonItem = changeLocationButton
+            self.setItems([weatherNavigationItem], animated: true)
+        }
+        
+        @objc func changeLocationButtonTapped() {
+            print(#function)
+        }
+    }
+    
+}
