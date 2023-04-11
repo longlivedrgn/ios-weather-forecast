@@ -22,4 +22,8 @@ extension String {
         
         return changedDate
     }
+    
+    var degreeSymbol: String {
+        return self + "°"
+    }
 }
