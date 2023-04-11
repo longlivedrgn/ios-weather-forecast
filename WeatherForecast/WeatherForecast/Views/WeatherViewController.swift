@@ -11,8 +11,8 @@ class WeatherViewController: UIViewController {
     
     private var weatherViewModel = WeatherViewModel()
     private var weatherCollectionView: UICollectionView!
-    private var backgroundImageView: UIImageView = {
-        let imageView = UIImageView()
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView(frame: view.bounds)
         imageView.image = UIImage(named: "backgroundImage")
         imageView.contentMode = .scaleAspectFill
         
@@ -32,18 +32,7 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     private func configureHierarchy() {
-        
-        weatherCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        weatherCollectionView.backgroundView = backgroundImageView
-        weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(weatherCollectionView)
-        
-        NSLayoutConstraint.activate([
-            weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        view.addSubview(backgroundImageView)
         
         view.addSubview(navigationBar)
         navigationBar.makeAlertDelegate = self
@@ -52,7 +41,18 @@ extension WeatherViewController {
         NSLayoutConstraint.activate([
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: navigationBar.intrinsicContentSize.height)
+        ])
+        
+        weatherCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(weatherCollectionView)
+        
+        NSLayoutConstraint.activate([
+            weatherCollectionView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         configureRefreshControl(in: weatherCollectionView)
@@ -76,8 +76,6 @@ extension WeatherViewController {
         var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
         
         configuration.headerMode = .supplementary
-//        configuration.headerTopPadding = self.navigationBar.intrinsicContentSize.height
-        
         configuration.backgroundColor = .clear
         
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
@@ -144,6 +142,12 @@ extension WeatherViewController: UICollectionViewDataSource {
     }
 }
 
+extension WeatherViewController: UICollectionViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+    }
+}
+
 extension WeatherViewController: WeatherViewModelDelegate {
     func weatherViewModelDidFinishSetUp(_ viewModel: WeatherViewModel) {
         
@@ -187,7 +191,11 @@ extension WeatherViewController {
             super.init(frame: .zero)
             
             let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
+            appearance.configureWithOpaqueBackground()
+//            appearance.configureWithTransparentBackground()
+//            appearance.backgroundImage = nil
+            appearance.backgroundColor = .clear
+
             self.standardAppearance = appearance
             self.scrollEdgeAppearance = appearance
             
