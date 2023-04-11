@@ -18,7 +18,6 @@ class WeatherViewController: UIViewController {
         
         return imageView
     }()
-    private var navigationBar = CustomNavigationBar()
     
     override func viewDidLoad() {
         
@@ -32,24 +31,19 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     private func configureHierarchy() {
-        view.addSubview(backgroundImageView)
         
-        view.addSubview(navigationBar)
-        navigationBar.makeAlertDelegate = self
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: navigationBar.intrinsicContentSize.height)
-        ])
+        // 함수로 빼기
+        navigationItem.title = "날씨 앱"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: nil, action: #selector(changeLocationButton))
         
         weatherCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        weatherCollectionView.backgroundView = backgroundImageView
         view.addSubview(weatherCollectionView)
         
         NSLayoutConstraint.activate([
-            weatherCollectionView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
             weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -61,7 +55,6 @@ extension WeatherViewController {
     private func collectionViewDelegate() {
         
         weatherCollectionView.dataSource = self
-        
         weatherViewModel.delegate = self
     }
     
@@ -140,13 +133,33 @@ extension WeatherViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
     }
-}
-
-extension WeatherViewController: UICollectionViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    
+    @objc func changeLocationButton() {
+        print("뭔데ㅜㅜ")
+        let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
         
+        let okAction = UIAlertAction(title: "변경", style: .default) { _ in
+            guard let longitude = Double(alertController.textFields?[0].text ?? "") else { return }
+            guard let latitude = Double(alertController.textFields?[1].text ?? "") else { return }
+            self.weatherViewModel.receiveDataFromAlertController(Coordinate(longitude: longitude, latitude: latitude))
+        }
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "위도"
+        }
+        alertController.addTextField { textField in
+            textField.placeholder = "경도"
+        }
+        // 왜 present 안됨?..
+        self.present(alertController, animated: true, completion: nil)
     }
 }
+
 
 extension WeatherViewController: WeatherViewModelDelegate {
     func weatherViewModelDidFinishSetUp(_ viewModel: WeatherViewModel) {
@@ -155,31 +168,32 @@ extension WeatherViewController: WeatherViewModelDelegate {
     }
 }
 
-extension WeatherViewController: MakeAlertDelegate {
+
+
+//extension WeatherViewController: MakeAlertDelegate {
     
-    func alertDelegate() {
-        let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
-
-        let okAction = UIAlertAction(title: "변경", style: .default) { _ in
-            guard let longitude = Double(alertController.textFields?[0].text ?? "") else { return }
-            guard let latitude = Double(alertController.textFields?[1].text ?? "") else { return }
-            self.weatherViewModel.receiveDataFromAlertController(Coordinate(longitude: longitude, latitude: latitude))
-        }
-
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-
-        alertController.addAction(okAction)
-        alertController.addAction(cancelAction)
-
-        alertController.addTextField { textField in
-            textField.placeholder = "위도"
-        }
-        alertController.addTextField { textField in
-            textField.placeholder = "경도"
-        }
-        present(alertController, animated: true, completion: nil)
-    }
-}
+//    func alertDelegate() {
+//        let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
+//
+//        let okAction = UIAlertAction(title: "변경", style: .default) { _ in
+//            guard let longitude = Double(alertController.textFields?[0].text ?? "") else { return }
+//            guard let latitude = Double(alertController.textFields?[1].text ?? "") else { return }
+//            self.weatherViewModel.receiveDataFromAlertController(Coordinate(longitude: longitude, latitude: latitude))
+//        }
+//
+//        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+//
+//        alertController.addAction(okAction)
+//        alertController.addAction(cancelAction)
+//
+//        alertController.addTextField { textField in
+//            textField.placeholder = "위도"
+//        }
+//        alertController.addTextField { textField in
+//            textField.placeholder = "경도"
+//        }
+//        present(alertController, animated: true, completion: nil)
+//    }
 
 extension WeatherViewController {
     
