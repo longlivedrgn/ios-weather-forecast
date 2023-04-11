@@ -10,6 +10,6 @@ import Foundation
 extension Double {
     
     func changeWeatherFormat() -> String {
-        return String(format: "%.1f", self)
+        return String(format: "%.1f", self).degree
     }
 }

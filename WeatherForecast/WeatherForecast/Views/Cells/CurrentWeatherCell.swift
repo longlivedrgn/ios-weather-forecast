@@ -10,27 +10,33 @@ import UIKit
 final class CurrentWeatherCell: UICollectionViewListCell {
     
     var currentWeather: CurrentWeatherViewModel.CurrentWeather?
-       
-       override func updateConfiguration(using state: UICellConfigurationState) {
-           super.updateConfiguration(using: state)
-           
-           guard let address = currentWeather?.address,
-                 let minimumTemperature = currentWeather?.temperatures.minimumTemperature,
-                 let maximumTemperature = currentWeather?.temperatures.maximumTemperature,
-                 let currentTemperature = currentWeather?.temperatures.averageTemperature
-           else { return }
-
-           let addressAndTemperatureText: String = """
-           \(address)
-           최저 \(minimumTemperature.changeWeatherFormat().degree) 최소 \(maximumTemperature.changeWeatherFormat().degree)
-           """
-           
-           let configuration = makeConfiguration(addressAndTemperatureText: addressAndTemperatureText, currentTemperatureText: currentTemperature.description)
-           
-           contentConfiguration = configuration
-       }
     
-    private func makeConfiguration(addressAndTemperatureText: String, currentTemperatureText: String) -> UIContentConfiguration {
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        
+        let (addressAndTemperatureText, currentTemperature) = makeTemperatureText()
+        var configuration = makeConfiguration(addressAndTemperatureText: addressAndTemperatureText, currentTemperatureText: currentTemperature)
+        configuration.image = currentWeather?.image
+        
+        contentConfiguration = configuration
+    }
+    
+    private func makeTemperatureText() -> (String, String) {
+        
+        guard let address = currentWeather?.address,
+              let minimumTemperature = currentWeather?.temperatures.minimumTemperature.changeWeatherFormat(),
+              let maximumTemperature = currentWeather?.temperatures.maximumTemperature.changeWeatherFormat(),
+              let currentTemperatureText = currentWeather?.temperatures.averageTemperature.description else { return ("", "") }
+        
+        let addressAndTemperatureText: String = """
+        \(address)
+        최저 \(minimumTemperature) 최소 \(maximumTemperature)
+        """
+        
+        return (addressAndTemperatureText, currentTemperatureText)
+    }
+    
+    private func makeConfiguration(addressAndTemperatureText: String, currentTemperatureText: String) -> UIListContentConfiguration {
         
         var configuration = UIListContentConfiguration.subtitleCell()
         
@@ -51,8 +57,6 @@ final class CurrentWeatherCell: UICollectionViewListCell {
         configuration.secondaryAttributedText = NSAttributedString(string: currentTemperatureText,attributes: currentTemperatureTextAttribtues)
         configuration.secondaryTextProperties.color = .white
         configuration.textToSecondaryTextVerticalPadding = 10
-        
-        configuration.image = currentWeather?.image
         
         return configuration
     }

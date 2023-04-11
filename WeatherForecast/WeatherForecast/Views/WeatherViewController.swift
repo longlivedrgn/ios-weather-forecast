@@ -76,7 +76,12 @@ extension WeatherViewController {
         var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
         
         configuration.headerMode = .supplementary
-//        configuration.headerTopPadding = self.navigationBar.intrinsicContentSize.height
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(44))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        header.pinToVisibleBounds = true
+        
+        //        configuration.headerTopPadding = self.navigationBar.intrinsicContentSize.height
         
         configuration.backgroundColor = .clear
         
@@ -154,18 +159,18 @@ extension WeatherViewController: MakeAlertDelegate {
     
     func alertDelegate() {
         let alertController = UIAlertController(title: "Title", message: "Message", preferredStyle: .alert)
-
+        
         let okAction = UIAlertAction(title: "변경", style: .default) { _ in
             guard let longitude = Double(alertController.textFields?[0].text ?? "") else { return }
             guard let latitude = Double(alertController.textFields?[1].text ?? "") else { return }
             self.weatherViewModel.receiveDataFromAlertController(Coordinate(longitude: longitude, latitude: latitude))
         }
-
+        
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-
+        
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
-
+        
         alertController.addTextField { textField in
             textField.placeholder = "위도"
         }
