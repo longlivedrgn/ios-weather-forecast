@@ -85,6 +85,13 @@ final class WeatherViewModel {
             }
         }
     }
+    
+    func receiveDataFromAlertController(_ coordinate: Coordinate) {
+        print("WeatherViewModel: \(coordinate)")
+        
+        execute(locationManager: coreLocationManager, location: CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude), weatherNetworkDispatcher: weatherNetworkDispatcher)
+//        execute(locationManager: coreLocationManager, location: CLLocation(latitude: 37.486082, longitude: 127.121675), weatherNetworkDispatcher: weatherNetworkDispatcher)
+    }
 }
 
 extension WeatherViewModel: CoreLocationManagerDelegate {

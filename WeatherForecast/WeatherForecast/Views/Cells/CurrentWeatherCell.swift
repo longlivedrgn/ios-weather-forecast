@@ -58,3 +58,8 @@ final class CurrentWeatherCell: UICollectionViewListCell {
            contentConfiguration = configuration
        }
 }
+
+protocol MakeAlertDelegate: AnyObject {
+    
+    func alertDelegate()
+}
