@@ -13,6 +13,7 @@
 		4F2D797429C04DC500C30BE2 /* WeatherNetworkDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2D797329C04DC500C30BE2 /* WeatherNetworkDispatcher.swift */; };
 		80985D7A29D6D3F7008BF073 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80985D7929D6D3F7008BF073 /* WeatherViewModel.swift */; };
 		80985D7C29D94E4F008BF073 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80985D7B29D94E4F008BF073 /* APIKeys.swift */; };
+		80985DAA29E4FDB8008BF073 /* Double+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80985DA929E4FDB8008BF073 /* Double+.swift */; };
 		870E0EFB29C3095D00DF5695 /* URLResponse+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870E0EFA29C3095D00DF5695 /* URLResponse+.swift */; };
 		873A5F1A29DAC6220005ED56 /* JSONNetworkDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873A5F1929DAC6220005ED56 /* JSONNetworkDeserializer.swift */; };
 		873EC5D729DD1499008DBE99 /* FiveDaysForecastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873EC5D629DD1499008DBE99 /* FiveDaysForecastCell.swift */; };
@@ -62,6 +63,7 @@
 		4F2D797329C04DC500C30BE2 /* WeatherNetworkDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherNetworkDispatcher.swift; sourceTree = "<group>"; };
 		80985D7929D6D3F7008BF073 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		80985D7B29D94E4F008BF073 /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		80985DA929E4FDB8008BF073 /* Double+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+.swift"; sourceTree = "<group>"; };
 		870E0EFA29C3095D00DF5695 /* URLResponse+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLResponse+.swift"; sourceTree = "<group>"; };
 		873A5F1929DAC6220005ED56 /* JSONNetworkDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONNetworkDeserializer.swift; sourceTree = "<group>"; };
 		873EC5D629DD1499008DBE99 /* FiveDaysForecastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiveDaysForecastCell.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 				4F08E26729DD173600B852B5 /* UICollectionReusableView+.swift */,
 				4F08E26929DD176A00B852B5 /* UICollectionView+.swift */,
 				873EC5D829DD2962008DBE99 /* String+.swift */,
+				80985DA929E4FDB8008BF073 /* Double+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -439,6 +442,7 @@
 				87B6EE5D29C2A70A00BB19BC /* FiveDaysForecastDTO.swift in Sources */,
 				C79C8CF825ADDDF200EEE3F1 /* WeatherViewController.swift in Sources */,
 				80985D7C29D94E4F008BF073 /* APIKeys.swift in Sources */,
+				80985DAA29E4FDB8008BF073 /* Double+.swift in Sources */,
 				8797480D29C04E4600C5F3D5 /* APIKeyManager.swift in Sources */,
 				8797480B29C04D1100C5F3D5 /* CurrentWeatherDTO.swift in Sources */,
 				8797480F29C0668D00C5F3D5 /* WeatherAPI.swift in Sources */,
