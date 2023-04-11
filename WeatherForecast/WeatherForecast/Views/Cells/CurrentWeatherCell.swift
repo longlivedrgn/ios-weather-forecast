@@ -25,11 +25,11 @@ final class CurrentWeatherCell: UICollectionViewListCell {
 
            let addressAndTemperatureText: String = """
            \(address)
-           최저 \(minimumTemperatureText.degreeSymbol) 최소 \(maximumTemperatureText.degreeSymbol)
+           최저 \(minimumTemperatureText.degree) 최소 \(maximumTemperatureText.degree)
            """
            
            let currentTemperatureValue = String(format: "%.1f", currentTemperature)
-           let currentTemperatureText: String = "\(currentTemperatureValue.degreeSymbol)"
+           let currentTemperatureText: String = "\(currentTemperatureValue.degree)"
            
            let configuration = makeConfiguration(addressAndTemperatureText: addressAndTemperatureText, currentTemperatureText: currentTemperatureText)
            

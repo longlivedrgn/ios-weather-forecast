@@ -115,7 +115,7 @@ extension WeatherViewController: UICollectionViewDataSource {
         
         let temperature = fiveDaysForecasts[indexPath.row].temperature
         let temperatureText = String(format: "%.1f", temperature)
-        cell.temperatureLabel.text = "\(temperatureText.degreeSymbol)"
+        cell.temperatureLabel.text = "\(temperatureText.degree)"
         
         let date = fiveDaysForecasts[indexPath.row].date
         let transformedDate = date.changeDateFormat()
