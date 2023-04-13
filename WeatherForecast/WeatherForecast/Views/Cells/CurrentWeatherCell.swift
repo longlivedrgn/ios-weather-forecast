@@ -15,7 +15,7 @@ final class CurrentWeatherCell: UICollectionViewListCell {
         super.updateConfiguration(using: state)
         
         let (addressAndTemperatureText, currentTemperature) = makeTemperatureText()
-        var configuration = makeConfiguration(addressAndTemperatureText: addressAndTemperatureText, currentTemperatureText: currentTemperature)
+        var configuration = configureAttribute(addressAndTemperatureText: addressAndTemperatureText, currentTemperatureText: currentTemperature)
         configuration.image = currentWeather?.image
         
         contentConfiguration = configuration
@@ -36,7 +36,7 @@ final class CurrentWeatherCell: UICollectionViewListCell {
         return (addressAndTemperatureText, currentTemperatureText)
     }
     
-    private func makeConfiguration(addressAndTemperatureText: String, currentTemperatureText: String) -> UIListContentConfiguration {
+    private func configureAttribute(addressAndTemperatureText: String, currentTemperatureText: String) -> UIListContentConfiguration {
         
         var configuration = UIListContentConfiguration.subtitleCell()
         
