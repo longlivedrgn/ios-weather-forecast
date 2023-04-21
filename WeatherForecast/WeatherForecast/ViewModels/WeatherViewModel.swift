@@ -80,9 +80,7 @@ final class WeatherViewModel {
             
             self.fiveDaysForecastWeather = fiveDaysForecasts
             
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(name: Notification.Name.modelDidFinishSetUp, object: nil)
-            }
+            NotificationCenter.default.post(name: Notification.Name.modelDidFinishSetUp, object: nil)
         }
     }
 }

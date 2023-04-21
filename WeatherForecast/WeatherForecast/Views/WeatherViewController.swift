@@ -54,7 +54,9 @@ extension WeatherViewController {
     }
     
     @objc func modelDidFinishSetUp(_ notification: Notification) {
-        weatherCollectionView.reloadData()
+        DispatchQueue.main.async {
+            self.weatherCollectionView.reloadData()
+        }
     }
     
     private func register() {
