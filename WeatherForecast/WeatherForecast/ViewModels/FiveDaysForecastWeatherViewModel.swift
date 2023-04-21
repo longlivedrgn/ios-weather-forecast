@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreLocation
 
 final class FiveDaysForecastWeatherViewModel {
         
