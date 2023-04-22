@@ -145,7 +145,7 @@
 		4F2D796F29C04D8E00C30BE2 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				873A5F1829DAC5FD0005ED56 /* Serializer */,
+				873A5F1829DAC5FD0005ED56 /* Serialization */,
 				80985D7729D6D243008BF073 /* Error */,
 				80985D7629D6D221008BF073 /* DTO */,
 				8797480929C04CFE00C5F3D5 /* Model */,
@@ -204,12 +204,12 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		873A5F1829DAC5FD0005ED56 /* Serializer */ = {
+		873A5F1829DAC5FD0005ED56 /* Serialization */ = {
 			isa = PBXGroup;
 			children = (
 				873A5F1929DAC6220005ED56 /* JSONNetworkDeserializer.swift */,
 			);
-			path = Serializer;
+			path = Serialization;
 			sourceTree = "<group>";
 		};
 		876194CD29D6D333005AB06D /* ViewModels */ = {
