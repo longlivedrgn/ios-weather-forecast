@@ -37,6 +37,20 @@ extension WeatherViewController {
     private func configureAttributes() {
         weatherCollectionView.backgroundView = backgroundImageView
         configureRefreshControl(in: weatherCollectionView)
+        configureNavigationBar()
+    }
+    
+    private func configureNavigationBar() {
+        
+        self.navigationItem.title = "날씨 앱"
+        navigationController?.navigationBar.prefersLargeTitles = true
+
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .red
+//        appearance.configureWithOpaqueBackground()
+        UINavigationBar.appearance().standardAppearance = appearance
+        
+
     }
     
     private func setUp() {
