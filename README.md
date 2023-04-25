@@ -27,24 +27,24 @@
   
 # ✨ 프로젝트 구현
 
-* [🔨 범용성과 재사용성, 유연성을 고려한 API 네트워크](#-범용성과-재사용성,-유연성을-고려한-api-네트워크)
-    * [**활용성 높은 API 설계**](#---------api-----)
-    * [**재사용성을 높인 네트워크 코드 구현**](#-----------------------)
-    * [**네트워크 폴더 구조**](#--------------)
- * [🔨 현재 위치를 사용하기 위한 CoreLocation](#------------------corelocation)
-  * [🔨 Collection View 구현하기](#---collection-view-----)
-      * [1️⃣ Layout](#1---layout)
-      * [2️⃣ DataSource](#2---datasource)
-      * [3️⃣ List Configuration](#3---list-configuration)
-      * [4️⃣ extension의 활용](#4---extension----)
-  * [🔨 View Model의 업데이트를 UI에 반영하기](#---view-model--------ui------)
-  * [🔨 Swift Style Guideline](#---swift-style-guideline)
-  * [🔨  트러블 슈팅](#----------)
-      * [1. 거대해진 View Controller](#1------view-controller)
-      * [2. 문제 해결 시도 : Data Controller의 생성](#2------------data-controller----)
-      * [3. 새로운 문제 발생 : 가벼운 ViewController, 거대한 Data Controller](#3-----------------viewcontroller------data-controller)
-      * [4. 문제 해결 시도 : SRP를 지킨 View Model](#4------------srp-----view-model)
-  * [🔨 Async, Await의 활용](#async--await----)
+* [🔨 범용성과 재사용성, 유연성을 고려한 API 네트워크](#-범용성과-재사용성-유연성을-고려한-api-네트워크)
+    * [**활용성 높은 API 설계**](#활용성-높은-api-설계)
+    * [**재사용성을 높인 네트워크 코드 구현**](#재사용성을-높인-네트워크-코드-구현)
+    * [**네트워크 폴더 구조**](#네트워크-폴더-구조)
+ * [🔨 현재 위치를 사용하기 위한 CoreLocation](#-현재-위치를-사용하기-위한-corelocation)
+  * [🔨 Collection View 구현하기](#-collection-view-구현하기)
+      * [1️⃣ Layout](#1️⃣-layout)
+      * [2️⃣ DataSource](#2️⃣-datasource)
+      * [3️⃣ List Configuration](#3️⃣-list-configuration)
+      * [4️⃣ extension의 활용](#4️⃣-extension의-활용)
+  * [🔨 View Model의 업데이트를 UI에 반영하기](#-view-model의-업데이트를-ui에-반영하기)
+  * [🔨 Swift Style Guideline](#-swift-style-guideline)
+  * [🔨  트러블 슈팅](#--트러블-슈팅)
+      * [1. 거대해진 View Controller](#1-거대해진-view-controller)
+      * [2. 문제 해결 시도 : Data Controller의 생성](#2-문제-해결-시도--data-controller의-생성)
+      * [3. 새로운 문제 발생 : 가벼운 View Controller, 거대한 Data Controller](#3-새로운-문제-발생--가벼운-view-controller-거대한-data-controller)
+      * [4. 문제 해결 시도 : SRP를 지킨 View Model](#4-문제-해결-시도--srp를-지킨-view-model)
+  * [🔨 Async, Await의 활용](#-async-await의-활용)
  
 ## 🔨 범용성과 재사용성, 유연성을 고려한 API 네트워크
 ### **활용성 높은 API 설계**
@@ -457,7 +457,7 @@ class WeatherViewController: UIViewController {
 
 </br>
 
-### 3. 새로운 문제 발생 : 가벼운 ViewController, 거대한 Data Controller 
+### 3. 새로운 문제 발생 : 가벼운 View Controller, 거대한 Data Controller 
 
 - 리팩토링을 통해 가벼운 View Controller를 얻었지만, 그에 반해 매우 많은 로직을 담은 Data Controller를 만들게 되었어요.
 - 현재 Data Controller에는 CurrentWeather, FiveDaysForecast 두 개의 타입을 모두 다루고 있어요.
