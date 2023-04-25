@@ -3,7 +3,7 @@
 ## ✨ 팀 소개
 | Miro(@longlivdrgn)| Sunny(@SunnnySong) |
 | ------------ | ------------- |
-|사진 넣기 | 사진 넣기  |
+|사진 넣기 | <img src="https://user-images.githubusercontent.com/85678496/234248105-edb205a9-9d94-45b8-ba02-8a76974c1d9a.jpeg" width="200" height="200"> |
 
 ## ✨ 기능 구현 영상
 -> 영상 추후에 올라갈 예정입니다. 
@@ -147,7 +147,7 @@ extension WeatherAPI {
 
 
 * 네트워크 코드를 설명하기 전, 더 쉬운 이해를 위해  네트워크 구조를 시각화 해봤어요.
-![](https://i.imgur.com/lhTXD0d.jpg)
+<img src="https://i.imgur.com/lhTXD0d.jpg" width="600" height="600">
 
 
 #### NetworkSession.swift
@@ -354,8 +354,7 @@ extension UICollectionView {
 ```
 
 ## 🔨 View Model의 업데이트를 UI에 반영하기
-![](https://i.imgur.com/hr4vUMs.jpg)
-
+<img src="https://i.imgur.com/hr4vUMs.jpg" width="600" height="400">
 - 기존에는 Delegate 패턴을 통하여 View Model의 업데이트 상황을 View Controller에게 알려주었어요.
 - 하지만 ViewModel, Model의 경우 `Observer 패턴(Notification Center, RxSwift, Combine)`을 활용함을 알게되었고, 최종적으로 `NotificationCenter`를 활용했어요.
 
