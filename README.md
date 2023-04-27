@@ -3,7 +3,7 @@
 ## ✨ 팀 소개
 | Miro(@longlivdrgn)| Sunny(@SunnnySong) |
 | ------------ | ------------- |
-|사진 넣기 | <img src="https://user-images.githubusercontent.com/85678496/234248105-edb205a9-9d94-45b8-ba02-8a76974c1d9a.jpeg" width="200" height="200"> |
+|<img src="https://user-images.githubusercontent.com/85781941/234733559-d523576b-3475-4829-96e1-29447f9d1587.JPG" width="200" height="200"> | <img src="https://user-images.githubusercontent.com/85678496/234248105-edb205a9-9d94-45b8-ba02-8a76974c1d9a.jpeg" width="200" height="200"> |
 
 ## ✨ 기능 구현 영상
 -> 영상 추후에 올라갈 예정입니다. 
