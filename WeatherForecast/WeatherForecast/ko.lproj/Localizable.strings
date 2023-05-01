@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  WeatherForecast
+
+  Created by Sunny on 2023/05/01.
+  
+*/
+
+"최저" = "min";
+"최대" = "max";

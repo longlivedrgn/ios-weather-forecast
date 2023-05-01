@@ -16,10 +16,7 @@ final class CurrentWeatherViewModel {
         let temperatures: Temperature
         
         var description: String {
-            let text = """
-            \(address)
-            최저 \(temperatures.minimumTemperature) 최대 \(temperatures.maximumTemperature)
-            """
+            let text = address + "최저".localized + temperatures.minimumTemperature.description + "최대".localized + temperatures.maximumTemperature.description
             return text
         }
     }
